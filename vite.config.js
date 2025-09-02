@@ -44,7 +44,8 @@ export default defineConfig({
 			},
 			// Optional: Workbox configuration for fine-grained caching control
 			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}']
+				globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+				navigateFallback: 'index.html'
 			}
 		})
 	]

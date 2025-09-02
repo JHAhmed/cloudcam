@@ -15,7 +15,7 @@
 		if (browser && Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
 			await StatusBar.setOverlaysWebView({ overlay: false });
 			// Optional: Customize to match your theme
-			await StatusBar.setBackgroundColor({ color: '#000000' }); // Replace with your color
+			await StatusBar.setBackgroundColor({ color: '#030712' }); // Replace with your color
 			await StatusBar.setStyle({ style: Style.Dark }); // Or Style.Dark
 		}
 	});

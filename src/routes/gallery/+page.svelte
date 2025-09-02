@@ -102,7 +102,7 @@
 	<h1 class="mb-6 text-left font-sans-light text-3xl font-extralight text-gray-200">Gallery</h1>
 
     {#if isLoading}
-        <div class="columns-2 gap-2 rounded-lg">
+        <div class="columns-2 gap-2 md:columns-3 md:gap-4 rounded-lg">
             {#each Array(5) as _}
                 <div class="mb-2 h-48 animate-pulse break-inside-avoid rounded-lg bg-gray-700"></div>
             {/each}
@@ -110,10 +110,10 @@
     {:else if error}
         <p class="text-red-400">Error: {error.message}</p>
     {:else if displayedImages && displayedImages.length > 0}
-        <div class="columns-2 gap-2">
+        <div class="columns-2 gap-2 md:columns-3 md:gap-4">
             {#key displayedImages}
                 {#each displayedImages as image (image.id)}
-                    <div class="mb-1 break-inside-avoid">
+                    <div class="mb-1 md:mb-3 break-inside-avoid">
                         <button onclick={() => openModal(image)} class="w-full">
                             <img
                                 src={image.url}

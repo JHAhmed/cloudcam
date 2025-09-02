@@ -98,10 +98,10 @@
 		<img
 			src={image.url}
 			alt="Selected item from gallery"
-			class="h-fit rounded-lg"
+			class="h-fit md:h-[30rem] w-fit rounded-lg"
 			loading="lazy"
 		/>
-		<div class="flex w-full items-center justify-center space-x-2">
+		<div class="flex w-full md:w-1/2 items-center justify-center space-x-2">
 			<button
 				class="w-full cursor-pointer rounded-xl bg-gradient-to-br from-white to-gray-200 px-12 py-4 text-sm leading-4 font-light tracking-tight"
 				onclick={downloadPhoto}
