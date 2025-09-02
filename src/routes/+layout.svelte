@@ -6,7 +6,6 @@
 
 	import { page } from '$app/stores';
 
-
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { StatusBar, Style } from '@capacitor/status-bar';
@@ -26,11 +25,12 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<title>CloudCam</title>
+	<link rel="manifest" href="/manifest.webmanifest" />
 </svelte:head>
 
 <div class="flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-8 text-center">
 	<nav class="mx-4 mt-6 flex items-center justify-between">
-
 		<!-- {#if $page.url.pathname != '/'}
 
 
