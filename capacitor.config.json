@@ -1,0 +1,14 @@
+{
+	"appId": "studio.wurks.cloudcam",
+	"appName": "CloudCam",
+	"webDir": "build",
+	"server": {
+		"androidScheme": "https"
+	},
+	"plugins": {
+		"StatusBar": {
+			"overlay": false,
+			"style": "DEFAULT"
+		}
+	}
+}

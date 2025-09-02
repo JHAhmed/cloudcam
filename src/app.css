@@ -1,0 +1,48 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@200,201,300,301,400,401,500,501,700,701&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+
+@theme {
+	--font-sans: 'Satoshi', 'sans-serif';
+	--font-sans-light: 'Poppins', 'sans-serif';
+	--color-primary: #EA4142;
+	--color-secondary: #1b1b1b;
+	--color-background: #efefef;
+	--animate-spin: spin 4s linear infinite;
+
+	--spacing-9xl: 88rem;
+	--spacing-10xl: 96rem;
+	--spacing-11xl: 104rem;
+	--spacing-12xl: 112rem;
+
+	--animate-bounce: bounce 2s ease-in-out infinite;
+
+	@keyframes bounce {
+		0%,
+		100% {
+			transform: translateY(-15%);
+			animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+		}
+		50% {
+			transform: none;
+			animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+		}
+	}
+}
+
+
+body {
+    /* Respects the top safe area (status bar, notch) */
+    padding-top: env(safe-area-inset-top);
+
+    /* Respects the bottom safe area (home indicator on iOS) */
+    padding-bottom: env(safe-area-inset-bottom);
+
+    /* Respects side safe areas (for landscape mode on some devices) */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+
+	touch-action: manipulation;
+}
