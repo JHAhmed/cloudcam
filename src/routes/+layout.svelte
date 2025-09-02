@@ -3,8 +3,10 @@
 	import favicon from '$lib/assets/favicon.svg';
 
 	import Icon from '@iconify/svelte';
-
+	import InstallButton from '$lib/components/InstallButton.svelte';
 	import { page } from '$app/stores';
+
+    let isBrowserTab = $state(true);
 
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -12,6 +14,17 @@
 	import { Capacitor } from '@capacitor/core';
 
 	onMount(async () => {
+
+        // This media query checks if the display mode is 'standalone',
+        // which is the mode for an installed PWA.
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+        // If it's running as a standalone PWA, update our variable.
+        if (isStandalone) {
+            isBrowserTab = false;
+        }
+
+
 		if (browser && Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
 			await StatusBar.setOverlaysWebView({ overlay: false });
 			// Optional: Customize to match your theme
@@ -40,7 +53,7 @@
 </svelte:head>
 
 <div class="flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-8 text-center">
-	<nav class="mx-4 mt-4 flex items-center justify-between">
+	<nav class="mx-4 mt-2 flex items-center justify-between">
 		<!-- {#if $page.url.pathname != '/'}
 
 
@@ -65,7 +78,15 @@
 
 	{@render children?.()}
 
-	<div class="mt-auto pt-4">
+	<footer class="mt-auto pt-4">
+
+		{#if isBrowserTab}
+			<div class="bg-slate-900 rounded-xl p-4 md:p-6 mx-auto text-white tracking-tight w-2/3 md:w-1/3 lg:w-1/4 mb-6">
+				<p class="mb-4 text-sm md:text-base">This is a PWA (Progressive Web App) that can be installed on your device.</p>
+				<InstallButton />
+			</div>
+		{/if}
+
 		<p class="text-sm font-normal text-gray-500">
 			Made with ♥️ by
 			<a href="https://jamal-haneef.vercel.app/" class=""
@@ -81,5 +102,5 @@
 				>.</a
 			>
 		</p>
-	</div>
+	</footer>
 </div>
