@@ -49,6 +49,8 @@
 		"@capacitor/filesystem": "^7.1.4",
 		"@capacitor/status-bar": "^7.0.2",
 		"@supabase/supabase-js": "^2.56.1",
+		"@sveltejs/adapter-auto": "^6.1.0",
+		"@sveltejs/adapter-vercel": "^5.10.2",
 		"svelte-masonry": "^0.1.5",
 		"svelte-sonner": "^1.0.5"
 	}

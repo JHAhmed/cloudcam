@@ -54,9 +54,9 @@
 		</h1>
 
 		<div class="flex space-x-4">
-			<div class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+			<a href="/settings" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
 				<Icon icon="ph:gear-thin" class="size-6 text-white" />
-			</div>
+			</a>
 			<a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
 				<Icon icon="ph:house-thin" class="size-6 text-white" />
 			</a>
