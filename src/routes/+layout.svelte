@@ -26,11 +26,21 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 	<title>CloudCam</title>
+	<meta name="description" content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere." />
 	<link rel="manifest" href="/manifest.webmanifest" />
+
+	<meta property="og:title" content="CloudCam" />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content="https://cloudcambywurks.vercel.app/ogimage.png" />
+	<meta property="og:url" content="https://cloudcambywurks.vercel.app/" />
+	<meta
+		property="og:description"
+		content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere."
+	/>
 </svelte:head>
 
 <div class="flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-8 text-center">
-	<nav class="mx-4 mt-6 flex items-center justify-between">
+	<nav class="mx-4 mt-4 flex items-center justify-between">
 		<!-- {#if $page.url.pathname != '/'}
 
 

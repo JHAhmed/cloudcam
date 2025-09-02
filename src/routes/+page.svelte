@@ -107,6 +107,20 @@
 
 <Toaster richColors expand={true} visibleToasts={1}  position="bottom-right" />
 
+<svelte:head>
+	<title>CloudCam</title>
+	<meta name="description" content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere." />
+
+	<meta property="og:title" content="CloudCam" />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content="https://cloudcambywurks.vercel.app/ogimage.png" />
+	<meta property="og:url" content="https://cloudcambywurks.vercel.app/" />
+	<meta
+		property="og:description"
+		content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere."
+	/>
+</svelte:head>
+
 <div class="">
 	<!-- <h1 class="text-4xl tracking-tight font-medium text-blue-400">Cloud<span class="text-gray-600">Cam</span></h1> -->
 

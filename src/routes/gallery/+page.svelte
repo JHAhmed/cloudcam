@@ -82,6 +82,20 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Gallery | CloudCam</title>
+	<meta name="description" content="View your images stored in CloudCam's gallery." />
+
+	<meta property="og:title" content="Gallery | CloudCam" />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content="https://cloudcambywurks.vercel.app/ogimage.png" />
+	<meta property="og:url" content="https://cloudcambywurks.vercel.app/gallery/" />
+	<meta
+		property="og:description"
+		content="View your images stored in CloudCam's gallery."
+	/>
+</svelte:head>
+
 <Toaster richColors position="bottom-right" />
 
 <div class="my-4 p-4">
