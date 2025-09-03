@@ -81,8 +81,9 @@
 	<footer class="mt-auto pt-4">
 
 		{#if isBrowserTab}
-			<div class="bg-slate-900 rounded-xl p-4 md:p-6 mx-auto text-white tracking-tight w-2/3 md:w-1/3 lg:w-1/4 mb-6">
-				<p class="mb-4 text-sm md:text-base">This is a PWA (Progressive Web App) that can be installed on your device.</p>
+			<div class="bg-slate-900 rounded-xl p-4 md:p-6 mx-auto text-white tracking-tight w-2/3 md:w-1/3 lg:w-1/4 mb-6 flex flex-col items-center justify-center">
+				<p class="text-sm md:text-base">This is a PWA (Progressive Web App) that can be installed on your device.</p>
+				<a href="/info" class="mt-2 text-sm md:text-base text-gray-400">Click here to know more!</a>
 				<InstallButton />
 			</div>
 		{/if}

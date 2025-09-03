@@ -35,7 +35,7 @@
 </script>
 
 {#if showInstallButton}
-    <button class="bg-blue-500 px-6 py-3 text-white font-medium tracking-tight shadow-md/10 cursor-pointer rounded-xl text-sm md:text-lg" on:click={handleInstallClick}>
+    <button class="bg-blue-500 mt-4 px-6 py-3 text-white font-medium tracking-tight shadow-md/10 cursor-pointer rounded-xl text-sm md:text-lg" on:click={handleInstallClick}>
         Install CloudCam
     </button>
 {/if}
