@@ -113,8 +113,8 @@
 
 	<meta property="og:title" content="CloudCam" />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="https://cloudcambywurks.vercel.app/ogimage.png" />
-	<meta property="og:url" content="https://cloudcambywurks.vercel.app/" />
+	<meta property="og:image" content="https://cloudcam.wurks.studio/ogimage.png" />
+	<meta property="og:url" content="https://cloudcam.wurks.studio/" />
 	<meta
 		property="og:description"
 		content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere."

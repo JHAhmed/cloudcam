@@ -3,6 +3,7 @@
 	import { App } from '@capacitor/app';
 	import Modal from '$lib/components/Modal.svelte';
 	import { Toaster, toast } from 'svelte-sonner';
+	import { animateIn } from '$lib';
 
 	let { data } = $props();
 
@@ -26,7 +27,6 @@
         data.images
             .then(resolvedImages => {
                 displayedImages = resolvedImages;
-				console.log(resolvedImages);
             })
             .catch(err => {
                 console.error("Failed to load images:", err);
@@ -88,8 +88,8 @@
 
 	<meta property="og:title" content="Gallery | CloudCam" />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="https://cloudcambywurks.vercel.app/ogimage.png" />
-	<meta property="og:url" content="https://cloudcambywurks.vercel.app/gallery/" />
+	<meta property="og:image" content="https://cloudcam.wurks.studio/ogimage.png" />
+	<meta property="og:url" content="https://cloudcam.wurks.studio/gallery/" />
 	<meta
 		property="og:description"
 		content="View your images stored in CloudCam's gallery."
@@ -112,8 +112,8 @@
     {:else if displayedImages && displayedImages.length > 0}
         <div class="columns-2 gap-2 md:columns-3 md:gap-4">
             {#key displayedImages}
-                {#each displayedImages as image (image.id)}
-                    <div class="mb-1 md:mb-3 break-inside-avoid">
+                {#each displayedImages as image, i}
+                    <div use:animateIn={{ delay: i * 0.2 }} class="mb-1 md:mb-3 break-inside-avoid">
                         <button onclick={() => openModal(image)} class="w-full">
                             <img
                                 src={image.url}

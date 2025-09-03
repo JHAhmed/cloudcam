@@ -12,6 +12,7 @@
 	import { browser } from '$app/environment';
 	import { StatusBar, Style } from '@capacitor/status-bar';
 	import { Capacitor } from '@capacitor/core';
+	import { animateIn } from '$lib';
 
 	onMount(async () => {
 		// This media query checks if the display mode is 'standalone',
@@ -45,16 +46,16 @@
 
 	<meta property="og:title" content="CloudCam" />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="https://cloudcambywurks.vercel.app/ogimage.png" />
-	<meta property="og:url" content="https://cloudcambywurks.vercel.app/" />
+	<meta property="og:image" content="https://cloudcam.wurks.studio/ogimage.png" />
+	<meta property="og:url" content="https://cloudcam.wurks.studio/" />
 	<meta
 		property="og:description"
 		content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere."
 	/>
 </svelte:head>
 
-<div class="flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-8 text-center">
-	<nav class="mx-4 mt-2 flex items-center justify-between">
+<div class="flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-4 text-center">
+	<nav class="mx-4 flex items-center justify-between">
 		<!-- {#if $page.url.pathname != '/'}
 
 
@@ -63,8 +64,9 @@
 			</a>
 		{/if} -->
 
-		<h1 class="text-4xl font-light tracking-tight leading-10 text-gray-400 text-left">
-			<span class="text-xl ">Hi,</span> <br> <span class="text-white">{usernameState.username}</span>!
+		<h1 class="text-left text-4xl leading-10 font-light tracking-tight text-gray-400">
+			<span class="text-xl">Hi,</span> <br />
+			<span class="text-white">{usernameState.username}</span>!
 		</h1>
 
 		<div class="flex space-x-2">
@@ -97,13 +99,13 @@
 
 		<p class="text-sm font-normal text-gray-500">
 			Made with ♥️ by
-			<a href="https://jamal-haneef.vercel.app/" class=""
+			<a use:animateIn={{ delay: 0.2, blur: 4 }} href="https://jamal-haneef.vercel.app/" class="" target="_blank" rel="noopener"
 				><span
 					class="mx-0.5 font-medium text-gray-300 decoration-gray-300 decoration-1 underline-offset-2 hover:underline"
 					>Jamal Haneef</span
 				></a
 			>
-			<a href="https://wurks.studio/" class=""
+			<a use:animateIn={{ delay: 0.4, blur: 4 }} href="https://wurks.studio/" class="" target="_blank" rel="noopener"
 				>& <span
 					class="ml-0.5 font-medium text-purple-600 decoration-purple-600 decoration-1 underline-offset-2 hover:underline"
 					>Wurks</span

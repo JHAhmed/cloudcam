@@ -27,8 +27,6 @@
             toast.error('Failed to delete image from storage');
             throw new Error(`Failed to delete image from storage: ${error.message}`);
         } else {
-            console.log(data);
-            console.log('Image deleted successfully');
             handleDelete(image.id);
         }
     }
@@ -76,7 +74,6 @@
                 directory: Directory.Documents, // Save to the device's Documents directory
             });
 
-            console.log('File saved to:', result.uri);
             toast.success('Image saved to Documents!');
 
         } catch (error) {
