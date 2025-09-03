@@ -16,12 +16,12 @@
     {/if} -->
 	<Tabs.Root bind:value class="w-full">
 		<Tabs.List
-			class="flex w-full rounded-md bg-gray-900 p-1.5 text-sm leading-[0.01em] font-semibold"
+			class="flex w-full rounded-md bg-gray-900 p-1.5 text-sm leading-[0.01em] font-semibold space-x-1"
 		>
 
         {#each options as option}
             <Tabs.Trigger value={option}
-                class="h-8 w-full rounded-md capitalize bg-transparent data-[state=active]:shadow-md/20 py-2 data-[state=active]:bg-gray-100 data-[state=active]:text-black text-white"
+                class="h-8 w-full rounded-md capitalize bg-transparent data-[state=active]:shadow-md/20 py-2 data-[state=active]:bg-slate-700 data-[state=active]:text-white text-gray-400"
             >{option}</Tabs.Trigger>
         {/each}
 

@@ -99,7 +99,7 @@
 <Toaster richColors position="bottom-right" />
 
 <div class="my-4 p-4">
-	<h1 class="mb-6 text-left font-sans-light text-3xl font-extralight text-gray-200">Gallery</h1>
+	<h1 class="mb-6 text-left text-3xl font-normal text-white">Gallery</h1>
 
     {#if isLoading}
         <div class="columns-2 gap-2 md:columns-3 md:gap-4 rounded-lg">

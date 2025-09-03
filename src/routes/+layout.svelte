@@ -1,12 +1,12 @@
 <script>
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-
+	import { usernameState } from '$lib/state.svelte.js';
 	import Icon from '@iconify/svelte';
 	import InstallButton from '$lib/components/InstallButton.svelte';
 	import { page } from '$app/stores';
 
-    let isBrowserTab = $state(true);
+	let isBrowserTab = $state(true);
 
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -14,16 +14,14 @@
 	import { Capacitor } from '@capacitor/core';
 
 	onMount(async () => {
+		// This media query checks if the display mode is 'standalone',
+		// which is the mode for an installed PWA.
+		const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
-        // This media query checks if the display mode is 'standalone',
-        // which is the mode for an installed PWA.
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-
-        // If it's running as a standalone PWA, update our variable.
-        if (isStandalone) {
-            isBrowserTab = false;
-        }
-
+		// If it's running as a standalone PWA, update our variable.
+		if (isStandalone) {
+			isBrowserTab = false;
+		}
 
 		if (browser && Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
 			await StatusBar.setOverlaysWebView({ overlay: false });
@@ -39,7 +37,10 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 	<title>CloudCam</title>
-	<meta name="description" content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere." />
+	<meta
+		name="description"
+		content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere."
+	/>
 	<link rel="manifest" href="/manifest.webmanifest" />
 
 	<meta property="og:title" content="CloudCam" />
@@ -62,16 +63,19 @@
 			</a>
 		{/if} -->
 
-		<h1 class="text-4xl font-light tracking-tight text-gray-400">
-			Hi, <span class="text-white">User</span>!
+		<h1 class="text-4xl font-light tracking-tight leading-10 text-gray-400 text-left">
+			<span class="text-xl ">Hi,</span> <br> <span class="text-white">{usernameState.username}</span>!
 		</h1>
 
-		<div class="flex space-x-4">
+		<div class="flex space-x-2">
+			<a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+				<Icon icon="ph:house-thin" class="size-6 text-white" />
+			</a>
 			<a href="/settings" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
 				<Icon icon="ph:gear-thin" class="size-6 text-white" />
 			</a>
-			<a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-				<Icon icon="ph:house-thin" class="size-6 text-white" />
+			<a href="/profile" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+				<Icon icon="ph:user-circle-thin" class="size-6 text-white" />
 			</a>
 		</div>
 	</nav>
@@ -79,11 +83,14 @@
 	{@render children?.()}
 
 	<footer class="mt-auto pt-4">
-
 		{#if isBrowserTab}
-			<div class="bg-slate-900 rounded-xl p-4 md:p-6 mx-auto text-white tracking-tight w-2/3 md:w-1/3 lg:w-1/4 mb-6 flex flex-col items-center justify-center">
-				<p class="text-sm md:text-base">This is a PWA (Progressive Web App) that can be installed on your device.</p>
-				<a href="/info" class="mt-2 text-sm md:text-base text-gray-400">Click here to know more!</a>
+			<div
+				class="mx-auto mb-6 flex w-2/3 flex-col items-center justify-center rounded-xl bg-slate-900 p-4 tracking-tight text-white md:w-1/3 md:p-6 lg:w-1/4"
+			>
+				<p class="text-sm md:text-base">
+					This is a PWA (Progressive Web App) that can be installed on your device.
+				</p>
+				<a href="/info" class="mt-2 text-sm text-gray-400 md:text-base">Click here to know more!</a>
 				<InstallButton />
 			</div>
 		{/if}

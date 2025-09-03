@@ -94,7 +94,7 @@
 	onclick={handleBackdropClick}
 	class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
 >
-	<div class="mx-auto my-auto flex h-fit w-5/6 flex-col items-center justify-center gap-2">
+	<div class="mx-auto my-auto flex h-fit w-3/4 flex-col items-center justify-center gap-2">
 		<img
 			src={image.url}
 			alt="Selected item from gallery"
