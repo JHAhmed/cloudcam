@@ -4,6 +4,12 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
+@source inline("columns-1");
+@source inline("columns-2");
+@source inline("columns-3");
+@source inline("columns-4");
+@source inline("columns-5");
+
 @theme {
 	--font-sans: 'Satoshi', 'sans-serif';
 	--font-sans-light: 'Poppins', 'sans-serif';

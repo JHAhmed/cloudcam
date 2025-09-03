@@ -106,7 +106,7 @@
 				Download
 			</button>
 			<button
-				class="w-full cursor-pointer rounded-xl bg-red-500/60 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white"
+				class="w-full cursor-pointer rounded-xl bg-red-500/70 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white"
 				onclick={deletePhoto}
 			>
 				Delete

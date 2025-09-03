@@ -33,6 +33,12 @@
 	});
 
 	let { children } = $props();
+
+	let navLinks = [
+		{ title: 'Home', icon: "ph:house-thin", url: '/' },
+		{ title: 'Settings', icon: "ph:gear-thin", url: '/settings' },
+		{ title: 'Profile', icon: "ph:user-circle-thin", url: '/profile' }
+	]
 </script>
 
 <svelte:head>
@@ -54,63 +60,79 @@
 	/>
 </svelte:head>
 
-<div class="flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-4 text-center">
-	<nav class="mx-4 flex items-center justify-between">
-		<!-- {#if $page.url.pathname != '/'}
+<div class="bg-gray-950">
+	<div class="flex min-h-screen md:max-w-5xl mx-auto flex-col bg-gray-950 p-4 py-6 pt-4 text-center">
+		<nav class="mx-4 flex items-center justify-between">
+			<!-- {#if $page.url.pathname != '/'}
+				<a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+					<Icon icon="ph:arrow-u-up-left-thin" class="size-6 text-white" />
+				</a>
+			{/if} -->
+	
+			<h1 class="text-left text-4xl leading-10 font-light tracking-tight text-gray-400">
+				<span class="text-xl">Hi,</span> <br />
+				<span class="text-white">{usernameState.username}</span>!
+			</h1>
+	
+			<div class="flex space-x-2">
+				<!-- <a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+					<Icon icon="ph:house-thin" class="size-6 text-white" />
+				</a>
+				<a href="/settings" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+					<Icon icon="ph:gear-thin" class="size-6 text-white" />
+				</a>
+				<a href="/profile" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+					<Icon icon="ph:user-circle-thin" class="size-6 text-white" />
+				</a> -->
 
-
-			<a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-				<Icon icon="ph:arrow-u-up-left-thin" class="size-6 text-white" />
-			</a>
-		{/if} -->
-
-		<h1 class="text-left text-4xl leading-10 font-light tracking-tight text-gray-400">
-			<span class="text-xl">Hi,</span> <br />
-			<span class="text-white">{usernameState.username}</span>!
-		</h1>
-
-		<div class="flex space-x-2">
-			<a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-				<Icon icon="ph:house-thin" class="size-6 text-white" />
-			</a>
-			<a href="/settings" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-				<Icon icon="ph:gear-thin" class="size-6 text-white" />
-			</a>
-			<a href="/profile" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-				<Icon icon="ph:user-circle-thin" class="size-6 text-white" />
-			</a>
-		</div>
-	</nav>
-
-	{@render children?.()}
-
-	<footer class="mt-auto pt-4">
-		{#if isBrowserTab}
-			<div
-				class="mx-auto mb-6 flex w-2/3 flex-col items-center justify-center rounded-xl bg-slate-900 p-4 tracking-tight text-white md:w-1/3 md:p-6 lg:w-1/4"
-			>
-				<p class="text-sm md:text-base">
-					This is a PWA (Progressive Web App) that can be installed on your device.
-				</p>
-				<a href="/info" class="mt-2 text-sm text-gray-400 md:text-base">Click here to know more!</a>
-				<InstallButton />
+				{#each navLinks as link, i}
+					<a href={link.url} use:animateIn={{ delay: i * 0.2, blur: 4 }} class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+						<Icon icon={link.icon} class="size-6 text-white" />
+					</a>
+				{/each}
 			</div>
-		{/if}
-
-		<p class="text-sm font-normal text-gray-500">
-			Made with ♥️ by
-			<a use:animateIn={{ delay: 0.2, blur: 4 }} href="https://jamal-haneef.vercel.app/" class="" target="_blank" rel="noopener"
-				><span
-					class="mx-0.5 font-medium text-gray-300 decoration-gray-300 decoration-1 underline-offset-2 hover:underline"
-					>Jamal Haneef</span
-				></a
-			>
-			<a use:animateIn={{ delay: 0.4, blur: 4 }} href="https://wurks.studio/" class="" target="_blank" rel="noopener"
-				>& <span
-					class="ml-0.5 font-medium text-purple-600 decoration-purple-600 decoration-1 underline-offset-2 hover:underline"
-					>Wurks</span
-				>.</a
-			>
-		</p>
-	</footer>
+		</nav>
+	
+		{@render children?.()}
+	
+		<footer class="mt-auto pt-4">
+			{#if isBrowserTab}
+				<div
+					class="mx-auto mb-6 flex w-2/3 flex-col items-center justify-center rounded-xl bg-slate-900 p-4 tracking-tight text-white md:p-6 "
+				>
+					<p class="text-sm md:text-base">
+						This is a PWA (Progressive Web App) that can be installed on your device.
+					</p>
+					<a href="/info" class="mt-2 text-sm text-gray-400 md:text-base">Click here to know more!</a>
+					<InstallButton />
+				</div>
+			{/if}
+	
+			<p class="text-sm font-normal text-gray-500">
+				Made with ♥️ by
+				<a
+					use:animateIn={{ delay: 0.4, blur: 4 }}
+					href="https://jamal-haneef.vercel.app/"
+					class=""
+					target="_blank"
+					rel="noopener"
+					><span
+						class="mx-0.5 font-medium text-gray-300 decoration-gray-300 decoration-1 underline-offset-2 hover:underline"
+						>Jamal Haneef</span
+					></a
+				>
+				<a
+					use:animateIn={{ delay: 0.8, blur: 4 }}
+					href="https://wurks.studio/"
+					class=""
+					target="_blank"
+					rel="noopener"
+					>& <span
+						class="ml-0.5 font-medium text-purple-600 decoration-purple-600 decoration-1 underline-offset-2 hover:underline"
+						>Wurks</span
+					>.</a
+				>
+			</p>
+		</footer>
+	</div>
 </div>

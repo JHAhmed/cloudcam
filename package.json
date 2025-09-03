@@ -54,6 +54,7 @@
 		"@sveltejs/adapter-auto": "^6.1.0",
 		"@sveltejs/adapter-vercel": "^5.10.2",
 		"bits-ui": "^2.9.6",
+		"jimp": "^1.6.0",
 		"motion": "^12.23.12",
 		"svelte-masonry": "^0.1.5",
 		"svelte-sonner": "^1.0.5"

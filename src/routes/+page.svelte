@@ -1,12 +1,12 @@
 <script>
 	import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+	import { Toaster, toast } from 'svelte-sonner';
 	import { supabase } from '$lib/supabaseClient';
 	import { goto } from '$app/navigation';
+	// import { Jimp } from "jimp";
+
 	let photoUrl = $state(null);
-
 	let message = $state('');
-
-	import { Toaster, toast } from 'svelte-sonner';
 
 	async function convertToBase64(photoUrl) {
 		const response = await fetch(photoUrl);
@@ -22,10 +22,40 @@
 		});
 	}
 
+	// const takePhoto = async () => {
+	// 	try {
+	// 		const image = await Camera.getPhoto({
+	// 			quality: 99,
+	// 			resultType: CameraResultType.Uri,
+	// 			source: CameraSource.Camera
+	// 		});
+
+	// 		const response = await fetch(image.webPath);
+	// 		const blob = await response.blob();
+
+	// 		const jimpImage = await Jimp.read(image.webPath);
+
+	// 		jimpImage
+	// 			.contrast(0.15)      // -1 to +1
+	// 			.brightness(1)    // -1 to +1
+	// 			.color([
+	// 				{ apply: 'saturate', params: [15] }, // -100 to +100
+	// 			]);
+
+	// 		const editedPhotoUrl = await jimpImage.getBase64("image/jpeg", {
+	// 			quality: 100,
+	// 			});
+
+	// 		photoUrl = editedPhotoUrl;
+	// 	} catch (e) {
+	// 		console.error('Error processing photo with Jimp', e);
+	// 	}
+	// };
+
 	const takePhoto = async () => {
 		try {
 			const image = await Camera.getPhoto({
-				quality: 100,
+				quality: 99,
 				// allowEditing: true,
 				resultType: CameraResultType.Uri,
 				source: CameraSource.Camera
@@ -36,33 +66,6 @@
 			console.error('Error taking photo', e);
 		}
 	};
-
-	// async function savePhoto() {
-	// 	toast.loading('Saving image...');
-
-	// 	try {
-	// 		const imageBase64 = await convertToBase64(photoUrl);
-
-	// 		const { error: supabaseError } = await supabase
-	// 			.from('images')
-	// 			.insert([{ image: { base64: imageBase64 } }]);
-
-	// 		if (supabaseError) {
-	// 			console.error('Background Supabase insert error:', supabaseError);
-	// 			toast.error('Failed to sync image with the server.');
-	// 		} else {
-	// 			toast.success('Image saved successfully!', {
-	// 				action: {
-	// 					label: 'View',
-	// 					onClick: () => goto(`/gallery`)
-	// 				}
-	// 			});
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('Error during photo save process:', error);
-	// 		toast.error('An unexpected error occurred while saving.');
-	// 	}
-	// }
 
 	const savePhoto = async () => {
 		// 1. Check if a photo has been taken

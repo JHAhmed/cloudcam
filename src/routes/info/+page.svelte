@@ -71,7 +71,7 @@
             <p class="text-gray-400 mb-4 flex-grow">For Chrome, Edge, and other Chromium browsers.</p>
             <ol class="list-decimal list-inside space-y-3 text-gray-300">
                 <li>
-                    Look for the <span class="font-semibold text-sky-300">Install icon</span> 
+                    Look for the <span class="font-semibold text-sky-400">Install icon</span> 
                     <Icon icon="mdi:download-circle" class="inline" /> in the address bar.
                 </li>
                 <li>
@@ -79,7 +79,7 @@
                     <Icon icon="mdi:dots-vertical" class="inline" />.
                 </li>
                 <li>
-                    Select <span class="font-semibold text-sky-300">"Install CloudCam"</span>.
+                    Select <span class="font-semibold text-sky-400">"Install CloudCam"</span>.
                 </li>
                 <li>Confirm the installation.</li>
             </ol>
