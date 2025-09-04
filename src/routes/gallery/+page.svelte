@@ -18,7 +18,7 @@
 	let isLoading = $state(true);
     let error = $state(null);
 
-	let columns = $state(2);
+	let columns = $state(3);
 
     // EFFECT: This runs when the component mounts. It resolves the data promise
     // and populates our reactive 'displayedImages' state.
@@ -112,10 +112,10 @@
 
 		<div class="flex space-x-2">
 			<button onclick={decreaseColumns} use:animateIn={{ delay: 0.2, blur: 4 }} class="flex size-8 items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700">
-				<Icon icon="ph:plus" class="size-6 text-white" />
+				<Icon icon="ph:plus" class="size-5 text-white" />
 			</button>
 			<button onclick={increaseColumns} use:animateIn={{ delay: 0.4, blur: 4 }} class="flex size-8 items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700">
-				<Icon icon="ph:minus" class="size-6 text-white" />
+				<Icon icon="ph:minus" class="size-5 text-white" />
 			</button>
 		</div>
 	</div>

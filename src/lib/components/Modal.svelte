@@ -3,6 +3,8 @@
     import { FileTransfer } from '@capacitor/file-transfer';
     import { Filesystem, Directory } from '@capacitor/filesystem';
     import { Capacitor } from '@capacitor/core';
+    import { onMount, onDestroy } from 'svelte';
+    import { App } from '@capacitor/app';
 
 	import { Toaster, toast } from 'svelte-sonner';
 
@@ -81,6 +83,25 @@
             toast.error('Could not save image.');
         }
     }
+
+    let listener = $state();
+
+    onMount(async () => {
+        // Add the listener when the component is mounted
+        listener = await App.addListener('backButton', (event) => {
+            // The listener automatically prevents the default back navigation.
+            // Just call your function to close the modal.
+            console.log('Hardware back button pressed!');
+            handleBackdropClick();
+        });
+    });
+
+    onDestroy(async () => {
+        // IMPORTANT: Clean up the listener when the component is destroyed
+        if (listener) {
+            await listener.remove();
+        }
+    });
 </script>
 
 <Toaster richColors position="bottom-right" />
