@@ -10,6 +10,20 @@
 @source inline("columns-4");
 @source inline("columns-5");
 
+@source inline("mb-1");
+@source inline("mb-2");
+@source inline("mb-3");
+@source inline("mb-4");
+@source inline("mb-5");
+
+@source inline("gap-1");
+@source inline("gap-2");
+@source inline("gap-3");
+@source inline("gap-4");
+@source inline("gap-5");
+
+
+
 @theme {
 	--font-sans: 'Satoshi', 'sans-serif';
 	--font-sans-light: 'Poppins', 'sans-serif';

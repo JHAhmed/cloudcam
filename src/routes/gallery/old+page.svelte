@@ -15,13 +15,14 @@
 
     let displayedImages = $state(null);
 
-	let isLoading = $state(false);
+	let isLoading = $state(true);
     let error = $state(null);
 
 	let columns = $state(3);
 	let gap = $state(3);
 
-    
+    // EFFECT: This runs when the component mounts. It resolves the data promise
+    // and populates our reactive 'displayedImages' state.
     $effect(() => {
         isLoading = true;
         data.images
@@ -126,38 +127,52 @@
 		</div>
 	</div>
 
-	{#await data.images}
-		<div class="columns-2 gap-1 md:columns-3 md:gap-2 rounded-lg">
-			{#each Array(5) as _}
-				<div class="mb-1 md:mb-2 h-48 animate-pulse break-inside-avoid rounded-lg bg-gray-700"></div>
-			{/each}
-		</div>
-	{:then images}
-		{#if images && images.length > 0}
-			<div class="{`columns-${columns}`} {`gap-1 md:gap-${6 - columns - 1}`}">
-				{#each images as image, i}
-					<div class="{`mb-1 md:mb-${6 - columns - 1}`} break-inside-avoid">
-						<button onclick={() => openModal(image)} class="w-full flex h-full m-0 p-0">
-							<img
-								src={image.url}
-								alt="A gallery item"
-								class="h-auto w-full rounded-md md:rounded-lg object-cover shadow-md m-0 p-0"
-								loading="lazy"
-							/>
-						</button>
-					</div>
-				{/each}
-			</div>
-		{:else}
-			<Icon icon="ph:file-image-thin" class="mx-auto mt-2 size-12 mb-2 text-gray-400" />
-			<p class="text-gray-400">No images found in the gallery.</p>
-		{/if}
-	{:catch error}
-		<p class="text-red-400">Error: {error.message}</p>
-	{/await}
+    {#if isLoading}
+        <div class="columns-2 gap-1 md:columns-3 md:gap-2 rounded-lg">
+            {#each Array(5) as _}
+                <div class="mb-1 md:mb-2 h-48 animate-pulse break-inside-avoid rounded-lg bg-gray-700"></div>
+            {/each}
+        </div>
+    {:else if error}
+        <p class="text-red-400">Error: {error.message}</p>
+    {:else if displayedImages && displayedImages.length > 0}
+	        <div class="{`columns-${columns}`} {`gap-1 md:gap-${6 - columns - 1}`}">
+	        <!-- <div class="{`columns-${columns}`} gap-2"> -->
+	            {#key displayedImages}
+	                {#each displayedImages as image, i}
+	                    <div use:animateIn={{ delay: i * 0.2 }} class="{`mb-1 md:mb-${6 - columns - 1}`} break-inside-avoid">
+	                    <!-- <div use:animateIn={{ delay: i * 0.2 }} class="mb-2 break-inside-avoid"> -->
+	                        <button onclick={() => openModal(image)} class="w-full flex h-full m-0 p-0">
+	                            <img
+	                                src={image.url}
+	                                alt="A gallery item"
+	                                class="h-auto w-full rounded-md md:rounded-lg object-cover shadow-md m-0 p-0"
+	                                loading="lazy"
+	                            />
+	                        </button>
+	                    </div>
+	                {/each}
+	            {/key}
+	        </div>
+    {:else}
+        <p>No images found in the gallery.</p>
+    {/if}
 
 	{#if isModal}
 		<Modal image={modalImage} {handleDelete} {handleBackdropClick} />
 	{/if}
 </div>
 
+
+<!-- <style>
+	.columns-1 {
+  column-count: 1;
+}
+.columns-2 {
+  column-count: 2;
+}
+.columns-3 {
+  column-count: 3;
+}
+/* etc. */
+</style> -->

@@ -8,11 +8,14 @@
 
 	let isBrowserTab = $state(true);
 
+
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { StatusBar, Style } from '@capacitor/status-bar';
 	import { Capacitor } from '@capacitor/core';
 	import { animateIn } from '$lib';
+	import AuthLock from '$components/AuthLock.svelte';
+	import { blur } from 'svelte/transition';
 
 	onMount(async () => {
 		// This media query checks if the display mode is 'standalone',
@@ -32,13 +35,14 @@
 		}
 	});
 
-	let { children } = $props();
+	let { children, data } = $props();
 
 	let navLinks = [
 		{ title: 'Home', icon: "ph:house-thin", url: '/' },
 		{ title: 'Settings', icon: "ph:gear-thin", url: '/settings' },
 		{ title: 'Profile', icon: "ph:user-circle-thin", url: '/profile' }
 	]
+
 </script>
 
 <svelte:head>
@@ -71,7 +75,7 @@
 	
 			<h1 class="text-left text-4xl leading-10 font-light tracking-tight text-gray-400">
 				<span class="text-xl">Hi,</span> <br />
-				<span class="text-white">{usernameState.username}</span>!
+				<span class="text-white">{data.isAuthenticated ? data.user.given_name : 'User'}</span>!
 			</h1>
 	
 			<div class="flex space-x-2">
@@ -93,7 +97,14 @@
 			</div>
 		</nav>
 	
-		{@render children?.()}
+		<AuthLock isAuthenticated={data.isAuthenticated}>
+			<!-- {#key $page.url.pathname} -->
+				<!-- <div in:blur={{ x: 200, duration: 300, delay: 300 }} out:blur={{ x: -200, duration: 300 }}> -->
+					{@render children?.()}
+				<!-- </div> -->
+			<!-- {/key} -->
+		</AuthLock>
+
 	
 		<footer class="mt-auto pt-4">
 			{#if isBrowserTab}
@@ -112,7 +123,7 @@
 				Made with ♥️ by
 				<a
 					use:animateIn={{ delay: 0.4, blur: 4 }}
-					href="https://jamal-haneef.vercel.app/"
+					href="https://jamalhaneef.vercel.app/"
 					class=""
 					target="_blank"
 					rel="noopener"

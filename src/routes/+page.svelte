@@ -8,6 +8,10 @@
 	let photoUrl = $state(null);
 	let message = $state('');
 
+	let { data } = $props();
+
+	let userId = data.user ? data.user.id : null;
+
 	async function convertToBase64(photoUrl) {
 		const response = await fetch(photoUrl);
 		const blob = await response.blob();
@@ -67,45 +71,106 @@
 		}
 	};
 
+	// const savePhoto = async () => {
+	// 	// 1. Check if a photo has been taken
+	// 	if (!photoUrl) {
+	// 		toast.error("Please take a photo first.");
+	// 		return;
+	// 	}
+
+	// 	toast.loading("Saving image...");
+
+	// 	try {
+	// 		// 2. Fetch the image data from the temporary URL
+	// 		const response = await fetch(photoUrl);
+	// 		const photoBlob = await response.blob();
+
+	// 		// 3. Create a unique file name for the image
+	// 		const fileName = `photo_${Date.now()}.png`;
+
+	// 		// 4. Upload the blob to the 'images' bucket in Supabase
+	// 		const { error: uploadError } = await supabase.storage
+	// 			.from('images') // Your bucket name
+	// 			.upload(fileName, photoBlob);
+
+	// 		if (uploadError) {
+	// 			// Let the catch block handle the error
+	// 			throw uploadError;
+	// 		}
+
+	// 		toast.dismiss(); // Remove the "Uploading..." toast
+	// 		toast.success("Photo saved successfully!");
+
+	// 		// Optional: Clear the photo preview after successful upload
+	// 		// photoUrl = null;
+
+	// 	} catch (error) {
+	// 		console.error("Error saving photo to Supabase:", error);
+	// 		toast.dismiss(); // Remove the "Uploading..." toast
+	// 		toast.error("Failed to save photo.");
+	// 	}
+	// };
+
 	const savePhoto = async () => {
-		// 1. Check if a photo has been taken
-		if (!photoUrl) {
-			toast.error("Please take a photo first.");
-			return;
-		}
+        // 1. Check if a photo has been taken
+        if (!photoUrl) {
+            toast.error("Please take a photo first.");
+            return;
+        }
 
-		toast.loading("Saving image...");
+        toast.loading("Saving image...");
 
-		try {
-			// 2. Fetch the image data from the temporary URL
-			const response = await fetch(photoUrl);
-			const photoBlob = await response.blob();
+        try {
+            // 2. Fetch the image data from the temporary URL
+            const response = await fetch(photoUrl);
+            const photoBlob = await response.blob();
 
-			// 3. Create a unique file name for the image
-			const fileName = `photo_${Date.now()}.png`;
+            // 3. Create a unique file name for the image
+            const fileName = `photo_${Date.now()}`;
 
-			// 4. Upload the blob to the 'images' bucket in Supabase
-			const { error: uploadError } = await supabase.storage
-				.from('images') // Your bucket name
-				.upload(fileName, photoBlob);
+            // 4. Get a pre-signed URL from your backend
+            const presignedUrlResponse = await fetch('/api/generate-upload-url', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fileName: fileName,
+                    fileType: photoBlob.type,
+					userId: userId // Pass the user ID to organize files per user
+                })
+            });
 
-			if (uploadError) {
-				// Let the catch block handle the error
-				throw uploadError;
-			}
+            if (!presignedUrlResponse.ok) {
+                throw new Error("Failed to get an upload URL.");
+            }
 
-			toast.dismiss(); // Remove the "Uploading..." toast
-			toast.success("Photo saved successfully!");
+            const { url: presignedUrl } = await presignedUrlResponse.json();
 
-			// Optional: Clear the photo preview after successful upload
-			// photoUrl = null;
+            // 5. Upload the blob directly to Cloudflare R2 using the pre-signed URL
+            const uploadResponse = await fetch(presignedUrl, {
+                method: 'PUT',
+                body: photoBlob,
+                headers: {
+                    'Content-Type': photoBlob.type,
+                },
+            });
 
-		} catch (error) {
-			console.error("Error saving photo to Supabase:", error);
-			toast.dismiss(); // Remove the "Uploading..." toast
-			toast.error("Failed to save photo.");
-		}
-	};
+            if (!uploadResponse.ok) {
+                throw new Error("Upload to R2 failed.");
+            }
+
+            toast.dismiss();
+            toast.success("Photo saved successfully!");
+
+            // Now you might want to save the final file URL/name to your Supabase database
+            // const finalImageUrl = `${PUBLIC_R2_URL}/${fileName}`;
+            // ... save finalImageUrl to your database ...
+
+        } catch (error) {
+            console.error("Error saving photo:", error);
+            toast.dismiss();
+            toast.error("Failed to save photo.");
+        }
+    };
 </script>
 
 <Toaster richColors expand={true} visibleToasts={1}  position="bottom-right" />

@@ -7,6 +7,7 @@
 		showLabel = true,
 		maxlength = 10,
         type = "text",
+		width = 'w-full',
 		placeholder = 'John Doe',
 		required = true,
 		icon = 'heroicons:user-circle',
@@ -14,7 +15,7 @@
 	} = $props();
 </script>
 
-<div class="w-full ">
+<div class="{width}">
 	{#if label}
 		<label for={name.toLowerCase().replace(/\s+/g, '-')} class="mb-1 block text-sm text-left font-medium text-gray-300">{label}</label>
 	{/if}
@@ -25,7 +26,7 @@
             maxlength={maxlength}
 			bind:value
 			{placeholder}
-			class="block w-full rounded-lg border-gray-500 bg-gray-900 focus:bg-gray-800 px-4 py-3 pr-10 text-gray-100 placeholder-gray-600 sm:text-sm focus:border-gray-300 focus:outline-none focus:ring-0"
+			class="block w-full rounded-lg border-gray-500 bg-gray-900 focus:bg-gray-800 autofill:bg-gray-800 px-4 py-3 pr-10 text-gray-100 placeholder-gray-600 text-sm focus:border-gray-300 focus:outline-none focus:ring-0"
 		/>
 		{#if icon}
 			<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
