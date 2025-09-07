@@ -56,9 +56,12 @@
 		"@supabase/supabase-js": "^2.56.1",
 		"@sveltejs/adapter-auto": "^6.1.0",
 		"@sveltejs/adapter-vercel": "^5.10.2",
+		"appwrite": "^19.0.0",
 		"bits-ui": "^2.9.6",
+		"canvas-confetti": "^1.9.3",
 		"jimp": "^1.6.0",
 		"motion": "^12.23.12",
+		"node-appwrite": "^18.0.0",
 		"svelte-masonry": "^0.1.5",
 		"svelte-sonner": "^1.0.5"
 	}

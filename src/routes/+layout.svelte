@@ -1,13 +1,12 @@
 <script>
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { usernameState } from '$lib/state.svelte.js';
+	import { userState } from '$lib/state.svelte.js';
 	import Icon from '@iconify/svelte';
 	import InstallButton from '$lib/components/InstallButton.svelte';
 	import { page } from '$app/stores';
 
 	let isBrowserTab = $state(true);
-
 
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -36,6 +35,9 @@
 	});
 
 	let { children, data } = $props();
+
+	data.isAuthenticated ? userState.userId = data.user.id : userState.userId = null;
+	data.isAuthenticated ? userState.username = data.user.given_name : userState.username = null;
 
 	let navLinks = [
 		{ title: 'Home', icon: "ph:house-thin", url: '/' },
@@ -67,45 +69,26 @@
 <div class="bg-gray-950">
 	<div class="flex min-h-screen md:max-w-5xl mx-auto flex-col bg-gray-950 p-4 py-6 pt-4 text-center">
 		<nav class="mx-4 flex items-center justify-between">
-			<!-- {#if $page.url.pathname != '/'}
-				<a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-					<Icon icon="ph:arrow-u-up-left-thin" class="size-6 text-white" />
-				</a>
-			{/if} -->
-	
-			<h1 class="text-left text-4xl leading-10 font-light tracking-tight text-gray-400">
+
+			<h1 class="text-left text-4xl font-light tracking-tight text-gray-400">
 				<span class="text-xl">Hi,</span> <br />
 				<span class="text-white">{data.isAuthenticated ? data.user.given_name : 'User'}</span>!
 			</h1>
 	
 			<div class="flex space-x-2">
-				<!-- <a href="/" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-					<Icon icon="ph:house-thin" class="size-6 text-white" />
-				</a>
-				<a href="/settings" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-					<Icon icon="ph:gear-thin" class="size-6 text-white" />
-				</a>
-				<a href="/profile" class="flex size-10 items-center justify-center rounded-full bg-gray-800">
-					<Icon icon="ph:user-circle-thin" class="size-6 text-white" />
-				</a> -->
-
 				{#each navLinks as link, i}
 					<a href={link.url} use:animateIn={{ delay: i * 0.2, blur: 4 }} class="flex size-10 items-center justify-center rounded-full bg-gray-800">
 						<Icon icon={link.icon} class="size-6 text-white" />
 					</a>
 				{/each}
 			</div>
+
 		</nav>
 	
 		<AuthLock isAuthenticated={data.isAuthenticated}>
-			<!-- {#key $page.url.pathname} -->
-				<!-- <div in:blur={{ x: 200, duration: 300, delay: 300 }} out:blur={{ x: -200, duration: 300 }}> -->
-					{@render children?.()}
-				<!-- </div> -->
-			<!-- {/key} -->
+			{@render children?.()}
 		</AuthLock>
 
-	
 		<footer class="mt-auto pt-4">
 			{#if isBrowserTab}
 				<div

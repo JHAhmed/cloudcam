@@ -3,14 +3,18 @@
 	import { Toaster, toast } from 'svelte-sonner';
 	import { supabase } from '$lib/supabaseClient';
 	import { goto } from '$app/navigation';
-	// import { Jimp } from "jimp";
+	import { onMount } from 'svelte';
+
+	import { userState } from '$lib/state.svelte.js';
+
+	let { data } = $props();
 
 	let photoUrl = $state(null);
 	let message = $state('');
 
-	let { data } = $props();
-
-	let userId = data.user ? data.user.id : null;
+	// let userId = data.user ? data.user.id : null;
+	let userId = userState.userId;
+	// console.log("Home:", $state.snapshot(userState));
 
 	async function convertToBase64(photoUrl) {
 		const response = await fetch(photoUrl);
@@ -26,43 +30,13 @@
 		});
 	}
 
-	// const takePhoto = async () => {
-	// 	try {
-	// 		const image = await Camera.getPhoto({
-	// 			quality: 99,
-	// 			resultType: CameraResultType.Uri,
-	// 			source: CameraSource.Camera
-	// 		});
-
-	// 		const response = await fetch(image.webPath);
-	// 		const blob = await response.blob();
-
-	// 		const jimpImage = await Jimp.read(image.webPath);
-
-	// 		jimpImage
-	// 			.contrast(0.15)      // -1 to +1
-	// 			.brightness(1)    // -1 to +1
-	// 			.color([
-	// 				{ apply: 'saturate', params: [15] }, // -100 to +100
-	// 			]);
-
-	// 		const editedPhotoUrl = await jimpImage.getBase64("image/jpeg", {
-	// 			quality: 100,
-	// 			});
-
-	// 		photoUrl = editedPhotoUrl;
-	// 	} catch (e) {
-	// 		console.error('Error processing photo with Jimp', e);
-	// 	}
-	// };
-
 	const takePhoto = async () => {
 		try {
 			const image = await Camera.getPhoto({
 				quality: 99,
 				// allowEditing: true,
 				resultType: CameraResultType.Uri,
-				source: CameraSource.Camera
+				source: CameraSource.Camera,
 			});
 
 			photoUrl = image.webPath;
@@ -70,46 +44,6 @@
 			console.error('Error taking photo', e);
 		}
 	};
-
-	// const savePhoto = async () => {
-	// 	// 1. Check if a photo has been taken
-	// 	if (!photoUrl) {
-	// 		toast.error("Please take a photo first.");
-	// 		return;
-	// 	}
-
-	// 	toast.loading("Saving image...");
-
-	// 	try {
-	// 		// 2. Fetch the image data from the temporary URL
-	// 		const response = await fetch(photoUrl);
-	// 		const photoBlob = await response.blob();
-
-	// 		// 3. Create a unique file name for the image
-	// 		const fileName = `photo_${Date.now()}.png`;
-
-	// 		// 4. Upload the blob to the 'images' bucket in Supabase
-	// 		const { error: uploadError } = await supabase.storage
-	// 			.from('images') // Your bucket name
-	// 			.upload(fileName, photoBlob);
-
-	// 		if (uploadError) {
-	// 			// Let the catch block handle the error
-	// 			throw uploadError;
-	// 		}
-
-	// 		toast.dismiss(); // Remove the "Uploading..." toast
-	// 		toast.success("Photo saved successfully!");
-
-	// 		// Optional: Clear the photo preview after successful upload
-	// 		// photoUrl = null;
-
-	// 	} catch (error) {
-	// 		console.error("Error saving photo to Supabase:", error);
-	// 		toast.dismiss(); // Remove the "Uploading..." toast
-	// 		toast.error("Failed to save photo.");
-	// 	}
-	// };
 
 	const savePhoto = async () => {
         // 1. Check if a photo has been taken

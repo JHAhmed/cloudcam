@@ -1,3 +1,6 @@
-export let usernameState = $state({
-  username: "User"
+export let userState = $state({
+  username: "User",
+  userId: null,
+  allowGallery: "off",
+  imagePersistence: "on",
 });

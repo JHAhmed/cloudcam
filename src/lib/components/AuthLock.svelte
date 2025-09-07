@@ -15,7 +15,7 @@
 			</div>
 			<p class="text-gray-400">You must be logged in to access this page.</p>
 			<p class="text-gray-400">Please log in or sign up to continue.</p>
-			<a href="/api/auth/register" class="mt-4 rounded-2xl bg-white/10 px-6 py-3 text-sm font-light text-white hover:bg-white/20">Log In / Sign Up</a>
+			<a href="/api/auth/register?post_login_redirect_url=/" class="mt-4 rounded-2xl bg-white/10 px-6 py-3 text-sm font-light text-white hover:bg-white/20">Log In / Sign Up</a>
 		</div>
 
 		<!-- <div class="absolute top-0 left-0 w-full h-full z-20 my-8 rounded-2xl backdrop-blur-3xl"> -->

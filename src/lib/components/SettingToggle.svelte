@@ -1,7 +1,7 @@
 <script>
 	import { Tabs } from 'bits-ui';
 
-	let { label, activeTab, value = $bindable("on"), onToggle = () => {}, options = ["on", "off"] } = $props();
+	let { label, activeTab, disabled = false, value = $bindable("on"), onToggle = () => {}, options = ["on", "off"] } = $props();
 
 
 </script>
@@ -14,9 +14,9 @@
 
         >{label}</Label>
     {/if} -->
-	<Tabs.Root bind:value class="w-full">
+	<Tabs.Root {disabled} onValueChange={onToggle} bind:value class="w-full">
 		<Tabs.List
-			class="flex w-full rounded-md bg-gray-900 p-1.5 text-sm leading-[0.01em] font-semibold space-x-1"
+			class="flex w-full rounded-md bg-gray-900 {disabled ? 'opacity-50 cursor-not-allowed' : ''} p-1.5 text-sm leading-[0.01em] font-semibold space-x-1"
 		>
 
         {#each options as option}
