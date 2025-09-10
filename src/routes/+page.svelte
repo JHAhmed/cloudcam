@@ -1,7 +1,6 @@
 <script>
 	import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 	import { Toaster, toast } from 'svelte-sonner';
-	import { supabase } from '$lib/supabaseClient';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
@@ -63,7 +62,7 @@
             const fileName = `photo_${Date.now()}`;
 
             // 4. Get a pre-signed URL from your backend
-            const presignedUrlResponse = await fetch('/api/generate-upload-url', {
+            const presignedUrlResponse = await fetch('/api/get-upload-url', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -94,10 +93,6 @@
 
             toast.dismiss();
             toast.success("Photo saved successfully!");
-
-            // Now you might want to save the final file URL/name to your Supabase database
-            // const finalImageUrl = `${PUBLIC_R2_URL}/${fileName}`;
-            // ... save finalImageUrl to your database ...
 
         } catch (error) {
             console.error("Error saving photo:", error);

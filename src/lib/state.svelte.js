@@ -1,6 +1,10 @@
 export let userState = $state({
-  username: "User",
-  userId: null,
-  allowGallery: "off",
-  imagePersistence: "on",
+	isLoading: true,
+
+	user: null,
+	userId: null,
+	username: 'User',
+
+	theme: 'dark',
+	imagePersistence: 'on'
 });

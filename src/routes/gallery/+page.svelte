@@ -59,10 +59,10 @@
 		}
 	});
 
-    function handleDelete(id) {
+    function handleDelete(key) {
         closeModal();
         toast.success('Image deleted successfully!');
-        displayedImages = displayedImages.filter((image) => image.id !== id);
+        displayedImages = displayedImages.filter((image) => image.key !== key);
     }
 
 	function openModal(image) {
@@ -135,7 +135,8 @@
 	{:then images}
 		{#if images && images.length > 0}
 			<div class="{`columns-${columns}`} {`gap-1 md:gap-${6 - columns - 1}`}">
-				{#each images as image, i}
+				<!-- {#each images as image, i} -->
+				{#each displayedImages as image, i}
 					<div class="{`mb-1 md:mb-${6 - columns - 1}`} break-inside-avoid">
 						<button onclick={() => openModal(image)} class="w-full flex h-full m-0 p-0">
 							<img

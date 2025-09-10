@@ -32,19 +32,26 @@
 			await StatusBar.setBackgroundColor({ color: '#030712' }); // Replace with your color
 			await StatusBar.setStyle({ style: Style.Dark }); // Or Style.Dark
 		}
+
+		data.isAuthenticated ? (userState.userId = data.user.id) : (userState.userId = null);
+		data.isAuthenticated ? (userState.username = data.user.given_name) : (userState.username = null);
+
+		if (data.settings) {
+			userState.theme = data.settings.theme;
+			userState.imagePersistence = data.settings.imagePersistence;
+		}
 	});
 
 	let { children, data } = $props();
 
-	data.isAuthenticated ? userState.userId = data.user.id : userState.userId = null;
-	data.isAuthenticated ? userState.username = data.user.given_name : userState.username = null;
+	// data.isAuthenticated ? (userState.userId = data.user.id) : (userState.userId = null);
+	// data.isAuthenticated ? (userState.username = data.user.given_name) : (userState.username = null);
 
 	let navLinks = [
-		{ title: 'Home', icon: "ph:house-thin", url: '/' },
-		{ title: 'Settings', icon: "ph:gear-thin", url: '/settings' },
-		{ title: 'Profile', icon: "ph:user-circle-thin", url: '/profile' }
-	]
-
+		{ title: 'Home', icon: 'ph:house-thin', url: '/' },
+		{ title: 'Settings', icon: 'ph:gear-thin', url: '/settings' },
+		{ title: 'Profile', icon: 'ph:user-circle-thin', url: '/profile' }
+	];
 </script>
 
 <svelte:head>
@@ -67,41 +74,51 @@
 </svelte:head>
 
 <div class="bg-gray-950">
-	<div class="flex min-h-screen md:max-w-5xl mx-auto flex-col bg-gray-950 p-4 py-6 pt-4 text-center">
+	<div
+		class="mx-auto flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-4 text-center md:max-w-5xl"
+	>
 		<nav class="mx-4 flex items-center justify-between">
-
 			<h1 class="text-left text-4xl font-light tracking-tight text-gray-400">
 				<span class="text-xl">Hi,</span> <br />
 				<span class="text-white">{data.isAuthenticated ? data.user.given_name : 'User'}</span>!
 			</h1>
-	
+
 			<div class="flex space-x-2">
 				{#each navLinks as link, i}
-					<a href={link.url} use:animateIn={{ delay: i * 0.2, blur: 4 }} class="flex size-10 items-center justify-center rounded-full bg-gray-800">
+					<a
+						href={link.url}
+						use:animateIn={{ delay: i * 0.2, blur: 4 }}
+						class="flex size-10 items-center justify-center rounded-full bg-gray-800"
+					>
 						<Icon icon={link.icon} class="size-6 text-white" />
 					</a>
 				{/each}
 			</div>
-
 		</nav>
-	
-		<AuthLock isAuthenticated={data.isAuthenticated}>
-			{@render children?.()}
-		</AuthLock>
+
+		{#key data.url}
+			<div in:blur={{ duration: 200, delay: 200 }} out:blur={{ duration: 200 }}>
+				<AuthLock isAuthenticated={data.isAuthenticated}>
+					{@render children?.()}
+				</AuthLock>
+			</div>
+		{/key}
 
 		<footer class="mt-auto pt-4">
 			{#if isBrowserTab}
 				<div
-					class="mx-auto mb-6 flex w-2/3 flex-col items-center justify-center rounded-xl bg-slate-900 p-4 tracking-tight text-white md:p-6 "
+					class="mx-auto mb-6 flex w-2/3 flex-col items-center justify-center rounded-xl bg-slate-900 p-4 tracking-tight text-white md:p-6"
 				>
 					<p class="text-sm md:text-base">
 						This is a PWA (Progressive Web App) that can be installed on your device.
 					</p>
-					<a href="/info" class="mt-2 text-sm text-gray-400 md:text-base">Click here to know more!</a>
+					<a href="/info" class="mt-2 text-sm text-gray-400 md:text-base"
+						>Click here to know more!</a
+					>
 					<InstallButton />
 				</div>
 			{/if}
-	
+
 			<p class="text-sm font-normal text-gray-500">
 				Made with ♥️ by
 				<a
@@ -122,7 +139,7 @@
 					target="_blank"
 					rel="noopener"
 					>& <span
-						class="ml-0.5 font-medium text-purple-600 decoration-purple-600 decoration-1 underline-offset-2 hover:underline"
+						class="ml-0.5 font-medium text-white decoration-white decoration-1 underline-offset-2 hover:underline"
 						>Wurks</span
 					>.</a
 				>

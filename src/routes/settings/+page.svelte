@@ -4,9 +4,12 @@
 	import { toast, Toaster } from "svelte-sonner";
 	import { onMount } from "svelte";
 
-	// console.log("Settings:", $state.snapshot(userState));
+	// let theme = $state("dark");
+	// let imagePersistence = $state("on");
 
-	let allowGallery = $state(userState.allowGallery);
+	// let { theme, imagePersistence } = userState;
+
+	let theme = $state(userState.theme);
 	let imagePersistence = $state(userState.imagePersistence);
 
 	let toggled = $state(false);
@@ -16,16 +19,28 @@
 	};
 
 	async function handleSave() {
-		// const response = await updatePreference(data.user.id, {
-		// 	allowGallery,
-		// 	imagePersistence
-		// });
 
-		userState.allowGallery = allowGallery;
+		const response = await fetch("/api/settings", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				theme,
+				imagePersistence,
+			})
+		});
+
+		userState.theme = theme;	
 		userState.imagePersistence = imagePersistence;
+
 		toggled = false;
-		// toast.success("Settings saved!");
-		toast("Settings (not) saved!");
+
+		if (response.ok) {
+			toast.success("Settings updated");
+		} else {
+			toast.error("Error updating settings");
+		}
 	}
 </script>
 
@@ -41,9 +56,9 @@
 
 	<div class="w-full flex flex-col space-y-4 text-white">
 		<div class="flex items-center w-full">
-			<p class="w-full text-left">Allow Gallery</p>
+			<p class="w-full text-left">Theme</p>
 			<div class="w-full">
-				<SettingToggle {onToggle} bind:value={allowGallery} options={['on', 'off']} />
+				<SettingToggle {onToggle} bind:value={theme} options={['dark', 'light']} />
 			</div>
 		</div>
 		<div class="flex items-center w-full">
