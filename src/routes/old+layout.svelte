@@ -1,54 +1,69 @@
 <script>
-    import '../app.css';
-    import { onMount } from 'svelte';
-    import Icon from '@iconify/svelte';
-    import { page } from '$app/stores';
-    import { blur } from 'svelte/transition';
-    import { browser } from '$app/environment';
-    import { Capacitor } from '@capacitor/core';
-    import { StatusBar, Style } from '@capacitor/status-bar';
-    
-    import { animateIn } from '$lib';
-    import favicon from '$lib/assets/favicon.svg';
-    import { userState } from '$lib/state.svelte.js';
-    import AuthLock from '$components/AuthLock.svelte';
-    import InstallButton from '$lib/components/InstallButton.svelte';
-    
-    let { children, data } = $props();
-    let isBrowserTab = $state(true);
+	import '../app.css';
+	import { onMount } from 'svelte';
+	import Icon from '@iconify/svelte';
+	import { page } from '$app/stores';
+	import { blur } from 'svelte/transition';
+	import { browser } from '$app/environment';
+	import { Capacitor } from '@capacitor/core';
+	import { StatusBar, Style } from '@capacitor/status-bar';
+	
+	import { animateIn } from '$lib';
+	import favicon from '$lib/assets/favicon.svg';
+	import { userState } from '$lib/state.svelte.js';
+	import AuthLock from '$components/AuthLock.svelte';
+	import InstallButton from '$lib/components/InstallButton.svelte';
+	
+	let isBrowserTab = $state(true);
 
-    // --- ✅ FIX: Use $effect for reactive data syncing ---
-    // This will now run automatically whenever the `data` prop changes (e.g., on login/logout).
-    $effect(() => {
-        userState.userId = data.user?.id ?? null;
-        userState.username = data.user?.given_name ?? null;
-        if (data.settings) {
-            userState.theme = data.settings.theme;
-            userState.imagePersistence = data.settings.imagePersistence;
-            userState.instantUpload = data.settings.instantUpload;
-        }
-    });
+    // $effect(() => {
+    //     userState.userId = data.user?.id ?? null;
+    //     userState.username = data.user?.given_name ?? null;
+    //     if (data.settings) {
+    //         userState.theme = data.settings.theme;
+    //         userState.imagePersistence = data.settings.imagePersistence;
+    //     }
+    // });
 
-    // --- ✅ IMPROVEMENT: Keep onMount ONLY for one-time setup logic ---
-    onMount(async () => {
-        // This logic only needs to run once, so it's perfect for onMount.
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        if (isStandalone) {
-            isBrowserTab = false;
-        }
+	onMount(async () => {
+		// This media query checks if the display mode is 'standalone',
+		// which is the mode for an installed PWA.
+		const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
-        if (browser && Capacitor.isNativePlatform()) {
-            await StatusBar.setOverlaysWebView({ overlay: false });
-            await StatusBar.setBackgroundColor({ color: '#030712' });
-            await StatusBar.setStyle({ style: Style.Dark });
-        }
-    });
+		// If it's running as a standalone PWA, update our variable.
+		if (isStandalone) {
+			isBrowserTab = false;
+		}
 
-    let navLinks = [
-        { title: 'Home', icon: 'ph:house-thin', url: '/' },
-        { title: 'Settings', icon: 'ph:gear-thin', url: '/settings' },
-        { title: 'Profile', icon: 'ph:user-circle-thin', url: '/profile' }
-    ];
+		if (browser && Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+			await StatusBar.setOverlaysWebView({ overlay: false });
+			// Optional: Customize to match your theme
+			await StatusBar.setBackgroundColor({ color: '#030712' }); // Replace with your color
+			await StatusBar.setStyle({ style: Style.Dark }); // Or Style.Dark
+		}
+
+		data.isAuthenticated ? (userState.userId = data.user.id) : (userState.userId = null);
+		data.isAuthenticated
+			? (userState.username = data.user.given_name)
+			: (userState.username = null);
+
+		if (data.settings) {
+			userState.theme = data.settings.theme;
+			userState.instantUpload = data.settings.instantUpload;
+			userState.imagePersistence = data.settings.imagePersistence;
+		}
+	});
+
+	let { children, data } = $props();
+	// console.log(data.user);
+	// data.isAuthenticated ? (userState.userId = data.user.id) : (userState.userId = null);
+	// data.isAuthenticated ? (userState.username = data.user.given_name) : (userState.username = null);
+
+	let navLinks = [
+		{ title: 'Home', icon: 'ph:house-thin', url: '/' },
+		{ title: 'Settings', icon: 'ph:gear-thin', url: '/settings' },
+		{ title: 'Profile', icon: 'ph:user-circle-thin', url: '/profile' }
+	];
 </script>
 
 <svelte:head>
@@ -70,7 +85,7 @@
 	/>
 </svelte:head>
 
-<div class:dark={userState.theme === 'dark'} class="bg-gray-50 dark:bg-gray-950">
+<div class="{userState.theme == 'dark' ? 'dark' : ''} bg-gray-50 dark:bg-gray-950">
 	<div
 		class="mx-auto flex min-h-screen flex-col bg-gray-50 p-4 py-6 pt-4 text-center md:max-w-5xl dark:bg-gray-950"
 	>
@@ -78,7 +93,7 @@
 			<h1 class="text-left text-4xl font-light tracking-tight text-gray-400">
 				<span class="text-xl">Hi,</span> <br />
 				<span class="text-black dark:text-white"
-					>{data.user?.given_name ?? 'User'}</span
+					>{data.isAuthenticated ? userState.username : 'User'}</span
 				>!
 			</h1>
 
@@ -96,11 +111,11 @@
 		</nav>
 
 		{#key data.url}
-			<div in:blur={{ duration: 200, delay: 200 }} out:blur={{ duration: 200 }}>
+			<!-- <div in:blur={{ duration: 200, delay: 200 }} out:blur={{ duration: 200 }}> -->
 				<AuthLock isAuthenticated={data.isAuthenticated}>
 					{@render children?.()}
 				</AuthLock>
-			</div>
+			<!-- </div> -->
 		{/key}
 
 		<footer class="mt-auto pt-4">

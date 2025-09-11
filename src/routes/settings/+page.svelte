@@ -1,13 +1,15 @@
 <script>
-	import SettingToggle from "$components/SettingToggle.svelte";
+	import { onMount } from "svelte";
 	import { userState } from "$lib/state.svelte";
 	import { toast, Toaster } from "svelte-sonner";
-	import { onMount } from "svelte";
+	import SettingToggle from "$components/SettingToggle.svelte";
+	import Loader from "$components/Loader.svelte";
 
 	let theme = $state(userState.theme);
 	let imagePersistence = $state(userState.imagePersistence);
 	let instantUpload = $state(userState.instantUpload);
 
+	let isLoading = $state(false);
 	let toggled = $state(false);
 
 	const onToggle = () => {
@@ -15,6 +17,8 @@
 	};
 
 	async function handleSave() {
+
+		isLoading = true;
 
 		const response = await fetch("/api/settings", {
 			method: "POST",
@@ -33,7 +37,7 @@
 		userState.imagePersistence = imagePersistence;
 
 		toggled = false;
-
+		isLoading = false;
 		if (response.ok) {
 			toast.success("Settings updated");
 		} else {
@@ -43,6 +47,10 @@
 </script>
 
 <Toaster position="bottom" richColors />
+
+{#if isLoading}
+	<Loader message="Saving your settings..." />
+{/if}
 
 <div class="flex mx-4 mt-8 items-start justify-between font-light text-black dark:text-white text-left">
 	<h1 class="text-3xl font-normal">Settings</h1>

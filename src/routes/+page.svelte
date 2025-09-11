@@ -14,7 +14,11 @@
 
 	onMount(() => {
 		data.user.id ? userId = data.user.id : console.log("No user ID found.");
-		// userState.instantUpload ? instantUpload = userState.instantUpload : instantUpload = false;
+		if (userState.instantUpload) {
+			userState.instantUpload === "on" ? instantUpload = "on" : instantUpload = "off";
+		} else {
+			instantUpload = "off";
+		}
 	});
 
 	const takePhoto = async () => {
@@ -27,7 +31,7 @@
 
 			photoUrl = image.webPath;
 			console.log(image);
-			if (instantUpload) {
+			if (instantUpload == "on") {
 				await savePhoto();
 			} 
 		} catch (e) {
@@ -158,7 +162,7 @@
 				class=" mx-auto h-auto max-w-10/12 rounded-xl border border-gray-500"
 			/>
 		</div>
-		{#if !instantUpload}
+		{#if instantUpload == "off"}
 			<button
 				class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl bg-gradient-to-br from-gray-950 to-slate-900 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white dark:from-white dark:to-gray-200 dark:text-black"
 				onclick={savePhoto}
