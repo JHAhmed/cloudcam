@@ -4,11 +4,6 @@
 	import { toast, Toaster } from "svelte-sonner";
 	import { onMount } from "svelte";
 
-	// let theme = $state("dark");
-	// let imagePersistence = $state("on");
-
-	// let { theme, imagePersistence } = userState;
-
 	let theme = $state(userState.theme);
 	let imagePersistence = $state(userState.imagePersistence);
 
@@ -46,15 +41,15 @@
 
 <Toaster position="bottom" richColors />
 
-<div class="flex  mx-4 mt-8 items-start justify-between font-light text-white text-left">
+<div class="flex mx-4 mt-8 items-start justify-between font-light text-black dark:text-white text-left">
 	<h1 class="text-3xl font-normal">Settings</h1>
-	<button onclick={handleSave} disabled={!toggled} class="rounded-lg bg-white/10 px-6 py-2 text-sm font-light disabled:opacity-70 disabled:pointer-events-none text-white hover:bg-white/20">Save</button>
+	<button onclick={handleSave} disabled={!toggled} class="rounded-lg bg-black/10 dark:bg-white/10 px-6 py-2 text-sm font-light disabled:opacity-50 disabled:pointer-events-none text-black dark:text-white hover:bg-black/20 dark:hover:bg-white/20">Save</button>
 
 </div>
 
 <div class="my-8 px-4">
 
-	<div class="w-full flex flex-col space-y-4 text-white">
+	<div class="w-full flex flex-col space-y-4 text-black dark:text-white">
 		<div class="flex items-center w-full">
 			<p class="w-full text-left">Theme</p>
 			<div class="w-full">

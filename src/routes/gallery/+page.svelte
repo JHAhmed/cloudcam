@@ -114,14 +114,14 @@
 
 <div class="my-4 p-4">
 	<div class="flex items-center mb-6 justify-between">
-		<h1 class="text-left text-3xl font-normal text-white">Gallery</h1>
+		<h1 class="text-left text-3xl font-normal text-black dark:text-white">Gallery</h1>
 
 		<div class="flex space-x-2">
-			<button onclick={decreaseColumns} use:animateIn={{ delay: 0.2, blur: 4 }} class="flex size-8 items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700">
-				<Icon icon="ph:plus" class="size-5 text-white" />
+			<button onclick={decreaseColumns} use:animateIn={{ delay: 0.2, blur: 4 }} class="flex cursor-pointer size-8 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700">
+				<Icon icon="ph:plus" class="size-5 text-black dark:text-white" />
 			</button>
-			<button onclick={increaseColumns} use:animateIn={{ delay: 0.4, blur: 4 }} class="flex size-8 items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700">
-				<Icon icon="ph:minus" class="size-5 text-white" />
+			<button onclick={increaseColumns} use:animateIn={{ delay: 0.4, blur: 4 }} class="flex cursor-pointer size-8 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700">
+				<Icon icon="ph:minus" class="size-5 text-black dark:text-white" />
 			</button>
 		</div>
 	</div>
@@ -129,7 +129,7 @@
 	{#await data.images}
 		<div class="columns-2 gap-1 md:columns-3 md:gap-2 rounded-lg">
 			{#each Array(5) as _}
-				<div class="mb-1 md:mb-2 h-48 animate-pulse break-inside-avoid rounded-lg bg-gray-700"></div>
+				<div class="mb-1 md:mb-2 h-48 animate-pulse break-inside-avoid rounded-lg bg-gray-200 dark:bg-gray-700"></div>
 			{/each}
 		</div>
 	{:then images}
@@ -142,7 +142,7 @@
 							<img
 								src={image.url}
 								alt="A gallery item"
-								class="h-auto w-full rounded-md md:rounded-lg object-cover shadow-md m-0 p-0"
+								class="h-auto w-full rounded-md md:rounded-lg object-cover shadow-lg/5 dark:shadow-md m-0 p-0"
 								loading="lazy"
 							/>
 						</button>

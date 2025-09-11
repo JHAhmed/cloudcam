@@ -62,18 +62,11 @@ export const handle = async ({ event, resolve }) => {
     sessionHooks({ event });
 
 	const isAuthenticated = await kindeAuthClient.isAuthenticated(event.request);
-
-    // if (isAuthenticated) {
-	// 	const user = await kindeAuthClient.getUser(event.request);
-    //     await syncUserToAppwrite(user);
-    // }
-
+    
 	if (isAuthenticated && !event.locals.isAppwriteUserSynced) {
 		const user = await kindeAuthClient.getUser(event.request);
         await syncUserToAppwrite(user);
         
-        // Set a flag on the session so we don't run this logic again.
-        // This flag will persist for the user's session.
         event.locals.isAppwriteUserSynced = true; 
     }
 	

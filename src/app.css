@@ -3,6 +3,7 @@
 
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
+@custom-variant dark (&:where(.dark, .dark *));
 
 @source inline("columns-1");
 @source inline("columns-2");
@@ -21,8 +22,6 @@
 @source inline("gap-3");
 @source inline("gap-4");
 @source inline("gap-5");
-
-
 
 @theme {
 	--font-sans: 'Satoshi', 'sans-serif';
