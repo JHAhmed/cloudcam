@@ -34,7 +34,9 @@
 		}
 
 		data.isAuthenticated ? (userState.userId = data.user.id) : (userState.userId = null);
-		data.isAuthenticated ? (userState.username = data.user.given_name) : (userState.username = null);
+		data.isAuthenticated
+			? (userState.username = data.user.given_name)
+			: (userState.username = null);
 
 		if (data.settings) {
 			userState.theme = data.settings.theme;
@@ -43,7 +45,7 @@
 	});
 
 	let { children, data } = $props();
-
+	// console.log(data.user);
 	// data.isAuthenticated ? (userState.userId = data.user.id) : (userState.userId = null);
 	// data.isAuthenticated ? (userState.username = data.user.given_name) : (userState.username = null);
 
@@ -73,14 +75,16 @@
 	/>
 </svelte:head>
 
-<div class="bg-gray-950">
+<div class="{userState.theme == 'dark' ? 'dark' : ''} bg-gray-50 dark:bg-gray-950">
 	<div
-		class="mx-auto flex min-h-screen flex-col bg-gray-950 p-4 py-6 pt-4 text-center md:max-w-5xl"
+		class="mx-auto flex min-h-screen flex-col bg-gray-50 p-4 py-6 pt-4 text-center md:max-w-5xl dark:bg-gray-950"
 	>
 		<nav class="mx-4 flex items-center justify-between">
 			<h1 class="text-left text-4xl font-light tracking-tight text-gray-400">
 				<span class="text-xl">Hi,</span> <br />
-				<span class="text-white">{data.isAuthenticated ? data.user.given_name : 'User'}</span>!
+				<span class="text-black dark:text-white"
+					>{data.isAuthenticated ? userState.username : 'User'}</span
+				>!
 			</h1>
 
 			<div class="flex space-x-2">
@@ -88,9 +92,9 @@
 					<a
 						href={link.url}
 						use:animateIn={{ delay: i * 0.2, blur: 4 }}
-						class="flex size-10 items-center justify-center rounded-full bg-gray-800"
+						class="flex size-10 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
 					>
-						<Icon icon={link.icon} class="size-6 text-white" />
+						<Icon icon={link.icon} class="size-6 text-black dark:text-white" />
 					</a>
 				{/each}
 			</div>
@@ -107,12 +111,12 @@
 		<footer class="mt-auto pt-4">
 			{#if isBrowserTab}
 				<div
-					class="mx-auto mb-6 flex w-2/3 flex-col items-center justify-center rounded-xl bg-slate-900 p-4 tracking-tight text-white md:p-6"
+					class="mx-auto mb-6 flex w-2/3 flex-col items-center justify-center rounded-xl bg-slate-100 p-4 tracking-tight text-black md:p-6 dark:bg-slate-900 dark:text-white"
 				>
 					<p class="text-sm md:text-base">
 						This is a PWA (Progressive Web App) that can be installed on your device.
 					</p>
-					<a href="/info" class="mt-2 text-sm text-gray-400 md:text-base"
+					<a href="/info" class="mt-2 text-sm text-gray-600 md:text-base dark:text-gray-400"
 						>Click here to know more!</a
 					>
 					<InstallButton />
@@ -128,7 +132,7 @@
 					target="_blank"
 					rel="noopener"
 					><span
-						class="mx-0.5 font-medium text-gray-300 decoration-gray-300 decoration-1 underline-offset-2 hover:underline"
+						class="mx-0.5 font-medium text-gray-700 decoration-gray-300 decoration-1 underline-offset-2 hover:underline dark:text-gray-300"
 						>Jamal Haneef</span
 					></a
 				>
@@ -139,7 +143,7 @@
 					target="_blank"
 					rel="noopener"
 					>& <span
-						class="ml-0.5 font-medium text-white decoration-white decoration-1 underline-offset-2 hover:underline"
+						class="ml-0.5 font-medium text-black decoration-white decoration-1 underline-offset-2 hover:underline dark:text-white"
 						>Wurks</span
 					>.</a
 				>
