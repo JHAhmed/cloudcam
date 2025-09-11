@@ -4,13 +4,15 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	import { userState } from '$lib/state.svelte.js';
-
 	let { data } = $props();
 
 	let photoUrl = $state(null);
+	let userId = $state(null);
 
-	let userId = userState.userId;
+	onMount(() => {
+
+		data.user.id ? userId = data.user.id : console.log("No user ID found.");
+	});
 
 	const takePhoto = async () => {
 		try {
@@ -33,7 +35,7 @@
         }
 
         toast.loading("Saving image...");
-
+		console.log('User ID:', userId);
         try {
             const response = await fetch(photoUrl);
             const photoBlob = await response.blob();
