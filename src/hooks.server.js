@@ -58,19 +58,38 @@ async function syncUserToAppwrite(kindeUser) {
     }
 }
 
+// export const handle = async ({ event, resolve }) => {
+//     sessionHooks({ event });
+
+// 	const isAuthenticated = await kindeAuthClient.isAuthenticated(event.request);
+    
+// 	if (isAuthenticated && !event.locals.isAppwriteUserSynced) {
+// 		const user = await kindeAuthClient.getUser(event.request);
+//         await syncUserToAppwrite(user);
+        
+//         event.locals.isAppwriteUserSynced = true; 
+//     }
+	
+// 	const response = await resolve(event);
+// 	return response;
+
+// };
+
 export const handle = async ({ event, resolve }) => {
     sessionHooks({ event });
 
-	const isAuthenticated = await kindeAuthClient.isAuthenticated(event.request);
+    const isAuthenticated = await kindeAuthClient.isAuthenticated(event.request);
     
-	if (isAuthenticated && !event.locals.isAppwriteUserSynced) {
-		const user = await kindeAuthClient.getUser(event.request);
-        await syncUserToAppwrite(user);
-        
-        event.locals.isAppwriteUserSynced = true; 
+    if (isAuthenticated) {
+        const user = await kindeAuthClient.getUser(event.request);
+        // Check a cookie or local flag before syncing
+        if (!event.cookies.get('appwrite_synced')) {
+            await syncUserToAppwrite(user);
+            event.cookies.set('appwrite_synced', 'true', { path: '/', maxAge: 3600 }); // Expires in 1 hour
+        }
+        event.locals.isAppwriteUserSynced = true;
     }
-	
-	const response = await resolve(event);
-	return response;
-
+    
+    const response = await resolve(event);
+    return response;
 };

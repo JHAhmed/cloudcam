@@ -10,6 +10,7 @@
 
 	let photoUrl = $state(null);
 	let message = $state('');
+	let photoData = $state(null); // To store the base64 string and format
 
 	// let userId = data.user ? data.user.id : null;
 	let userId = userState.userId;
@@ -29,76 +30,107 @@
 		});
 	}
 
+	function base64ToBlob(base64, contentType = '') {
+		const byteCharacters = atob(base64);
+		const byteArrays = [];
+
+		for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+			const slice = byteCharacters.slice(offset, offset + 512);
+			const byteNumbers = new Array(slice.length);
+			for (let i = 0; i < slice.length; i++) {
+				byteNumbers[i] = slice.charCodeAt(i);
+			}
+			const byteArray = new Uint8Array(byteNumbers);
+			byteArrays.push(byteArray);
+		}
+
+		return new Blob(byteArrays, { type: contentType });
+	}
+
+
+
+
 	const takePhoto = async () => {
 		try {
 			const image = await Camera.getPhoto({
 				quality: 99,
-				// allowEditing: true,
-				resultType: CameraResultType.Uri,
+				// allowEditing: true,  // Uncomment if needed
+				resultType: CameraResultType.Base64,  // Change to Base64
 				source: CameraSource.Camera
 			});
 
-			photoUrl = image.webPath;
+			// Now image.base64String holds the data
+			photoUrl = `data:${image.format};base64,${image.base64String}`;
+			// return image.base64String;  // Return it for use in savePhoto
+			photoData = {
+				base64String: image.base64String,
+				format: image.format
+			};
 		} catch (e) {
 			console.error('Error taking photo', e);
+			return null;
 		}
 	};
 
-	const savePhoto = async () => {
-		// 1. Check if a photo has been taken
-		if (!photoUrl) {
-			toast.error('Please take a photo first.');
-			return;
-		}
 
-		toast.loading('Saving image...');
+const savePhoto = async () => {
+    // 1. Check if a photo has been taken
+    if (!photoData || !photoData.base64String) {
+        toast.error('Please take a photo first.');
+        return;
+    }
 
-		try {
-			// 2. Fetch the image data from the temporary URL
-			const response = await fetch(photoUrl);
-			const photoBlob = await response.blob();
+    toast.loading('Saving image...');
 
-			// 3. Create a unique file name for the image
-			const fileName = `photo_${Date.now()}`;
+    try {
+        // 2. Convert the Base64 string to a Blob
+        const photoBlob = base64ToBlob(photoData.base64String, `image/${photoData.format}`);
 
-			// 4. Get a pre-signed URL from your backend
-			const presignedUrlResponse = await fetch('/api/get-upload-url', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					fileName: fileName,
-					fileType: photoBlob.type,
-					userId: userId // Pass the user ID to organize files per user
-				})
-			});
+        // 3. Create a unique file name for the image
+        const fileName = `photo_${Date.now()}.${photoData.format}`;
 
-			if (!presignedUrlResponse.ok) {
-				throw new Error('Failed to get an upload URL.');
-			}
+        // 4. Get a pre-signed URL (this part remains the same)
+        const presignedUrlResponse = await fetch('/api/get-upload-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                fileName: fileName,
+                fileType: photoBlob.type,
+                userId: userId
+            })
+        });
 
-			const { url: presignedUrl } = await presignedUrlResponse.json();
+        if (!presignedUrlResponse.ok) {
+            throw new Error('Failed to get an upload URL.');
+        }
 
-			// 5. Upload the blob directly to Cloudflare R2 using the pre-signed URL
-			const uploadResponse = await fetch(presignedUrl, {
-				method: 'PUT',
-				body: photoBlob,
-				headers: {
-					'Content-Type': photoBlob.type
-				}
-			});
+        const { url: presignedUrl } = await presignedUrlResponse.json();
 
-			if (!uploadResponse.ok) {
-				throw new Error('Upload to R2 failed.');
-			}
+        // 5. Upload the blob (this part also remains the same)
+        const uploadResponse = await fetch(presignedUrl, {
+            method: 'PUT',
+            body: photoBlob,
+            headers: {
+                'Content-Type': photoBlob.type
+            }
+        });
 
-			toast.dismiss();
-			toast.success('Photo saved successfully!');
-		} catch (error) {
-			console.error('Error saving photo:', error);
-			toast.dismiss();
-			toast.error('Failed to save photo.');
-		}
-	};
+        if (!uploadResponse.ok) {
+            throw new Error('Upload to R2 failed.');
+        }
+
+        toast.dismiss();
+        toast.success('Photo saved successfully!');
+
+        // Optional: Clear the photo data after successful upload
+        photoData = null;
+
+    } catch (error) {
+        console.error('Error saving photo:', error);
+        toast.dismiss();
+        toast.error('Failed to save photo.');
+    }
+};
 </script>
 
 <Toaster richColors expand={true} visibleToasts={1} position="bottom-right" />

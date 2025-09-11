@@ -16,6 +16,15 @@
 	import AuthLock from '$components/AuthLock.svelte';
 	import { blur } from 'svelte/transition';
 
+    // $effect(() => {
+    //     userState.userId = data.user?.id ?? null;
+    //     userState.username = data.user?.given_name ?? null;
+    //     if (data.settings) {
+    //         userState.theme = data.settings.theme;
+    //         userState.imagePersistence = data.settings.imagePersistence;
+    //     }
+    // });
+
 	onMount(async () => {
 		// This media query checks if the display mode is 'standalone',
 		// which is the mode for an installed PWA.
@@ -101,11 +110,11 @@
 		</nav>
 
 		{#key data.url}
-			<div in:blur={{ duration: 200, delay: 200 }} out:blur={{ duration: 200 }}>
+			<!-- <div in:blur={{ duration: 200, delay: 200 }} out:blur={{ duration: 200 }}> -->
 				<AuthLock isAuthenticated={data.isAuthenticated}>
 					{@render children?.()}
 				</AuthLock>
-			</div>
+			<!-- </div> -->
 		{/key}
 
 		<footer class="mt-auto pt-4">

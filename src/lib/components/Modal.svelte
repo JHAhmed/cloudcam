@@ -121,7 +121,7 @@
 	<img
 		src={image.url}
 		alt="Selected item from gallery"
-		class="my-2 h-fit w-3/4 rounded-lg md:h-[30rem] md:w-fit"
+		class="my-2 h-fit max-h-[90vh] w-3/4 rounded-lg md:h-[30rem] md:w-fit"
 		loading="lazy"
 	/>
 	<div class="flex w-3/4 items-center justify-center space-x-2 md:w-1/2">
