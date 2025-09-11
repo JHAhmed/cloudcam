@@ -1,12 +1,19 @@
 <script>
 	import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 	import { Toaster, toast } from 'svelte-sonner';
-	import { supabase } from '$lib/supabaseClient';
 	import { goto } from '$app/navigation';
-	// import { Jimp } from "jimp";
+	import { onMount } from 'svelte';
+
+	import { userState } from '$lib/state.svelte.js';
+
+	let { data } = $props();
 
 	let photoUrl = $state(null);
 	let message = $state('');
+
+	// let userId = data.user ? data.user.id : null;
+	let userId = userState.userId;
+	// console.log("Home:", $state.snapshot(userState));
 
 	async function convertToBase64(photoUrl) {
 		const response = await fetch(photoUrl);
@@ -21,36 +28,6 @@
 			reader.readAsDataURL(blob);
 		});
 	}
-
-	// const takePhoto = async () => {
-	// 	try {
-	// 		const image = await Camera.getPhoto({
-	// 			quality: 99,
-	// 			resultType: CameraResultType.Uri,
-	// 			source: CameraSource.Camera
-	// 		});
-
-	// 		const response = await fetch(image.webPath);
-	// 		const blob = await response.blob();
-
-	// 		const jimpImage = await Jimp.read(image.webPath);
-
-	// 		jimpImage
-	// 			.contrast(0.15)      // -1 to +1
-	// 			.brightness(1)    // -1 to +1
-	// 			.color([
-	// 				{ apply: 'saturate', params: [15] }, // -100 to +100
-	// 			]);
-
-	// 		const editedPhotoUrl = await jimpImage.getBase64("image/jpeg", {
-	// 			quality: 100,
-	// 			});
-
-	// 		photoUrl = editedPhotoUrl;
-	// 	} catch (e) {
-	// 		console.error('Error processing photo with Jimp', e);
-	// 	}
-	// };
 
 	const takePhoto = async () => {
 		try {
@@ -70,11 +47,11 @@
 	const savePhoto = async () => {
 		// 1. Check if a photo has been taken
 		if (!photoUrl) {
-			toast.error("Please take a photo first.");
+			toast.error('Please take a photo first.');
 			return;
 		}
 
-		toast.loading("Saving image...");
+		toast.loading('Saving image...');
 
 		try {
 			// 2. Fetch the image data from the temporary URL
@@ -82,37 +59,56 @@
 			const photoBlob = await response.blob();
 
 			// 3. Create a unique file name for the image
-			const fileName = `photo_${Date.now()}.png`;
+			const fileName = `photo_${Date.now()}`;
 
-			// 4. Upload the blob to the 'images' bucket in Supabase
-			const { error: uploadError } = await supabase.storage
-				.from('images') // Your bucket name
-				.upload(fileName, photoBlob);
+			// 4. Get a pre-signed URL from your backend
+			const presignedUrlResponse = await fetch('/api/get-upload-url', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					fileName: fileName,
+					fileType: photoBlob.type,
+					userId: userId // Pass the user ID to organize files per user
+				})
+			});
 
-			if (uploadError) {
-				// Let the catch block handle the error
-				throw uploadError;
+			if (!presignedUrlResponse.ok) {
+				throw new Error('Failed to get an upload URL.');
 			}
 
-			toast.dismiss(); // Remove the "Uploading..." toast
-			toast.success("Photo saved successfully!");
+			const { url: presignedUrl } = await presignedUrlResponse.json();
 
-			// Optional: Clear the photo preview after successful upload
-			// photoUrl = null;
+			// 5. Upload the blob directly to Cloudflare R2 using the pre-signed URL
+			const uploadResponse = await fetch(presignedUrl, {
+				method: 'PUT',
+				body: photoBlob,
+				headers: {
+					'Content-Type': photoBlob.type
+				}
+			});
 
+			if (!uploadResponse.ok) {
+				throw new Error('Upload to R2 failed.');
+			}
+
+			toast.dismiss();
+			toast.success('Photo saved successfully!');
 		} catch (error) {
-			console.error("Error saving photo to Supabase:", error);
-			toast.dismiss(); // Remove the "Uploading..." toast
-			toast.error("Failed to save photo.");
+			console.error('Error saving photo:', error);
+			toast.dismiss();
+			toast.error('Failed to save photo.');
 		}
 	};
 </script>
 
-<Toaster richColors expand={true} visibleToasts={1}  position="bottom-right" />
+<Toaster richColors expand={true} visibleToasts={1} position="bottom-right" />
 
 <svelte:head>
 	<title>CloudCam</title>
-	<meta name="description" content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere." />
+	<meta
+		name="description"
+		content="CloudCam is a camera app that saves photos and videos directly to the cloud, so you never run out of space and can access your memories anywhere."
+	/>
 
 	<meta property="og:title" content="CloudCam" />
 	<meta property="og:type" content="website" />
@@ -129,14 +125,14 @@
 
 	<div class="my-4 flex space-x-4">
 		<button
-			class="m-2 my-4 w-full cursor-pointer rounded-2xl bg-white px-12 py-6 text-sm leading-4 font-light tracking-tight"
+			class="m-2 my-4 w-full cursor-pointer rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-black px-12 py-6 text-sm leading-4 font-light tracking-tight"
 			onclick={takePhoto}
 		>
 			Click Photo
 		</button>
 		<a
 			href="/gallery"
-			class="m-2 my-4 w-full cursor-pointer rounded-2xl bg-slate-900 px-12 py-6 text-sm leading-4 font-light tracking-tight text-white"
+			class="m-2 my-4 w-full cursor-pointer rounded-2xl bg-white dark:bg-slate-900 px-12 py-6 text-sm leading-4 font-light tracking-tight text-black dark:text-white shadow-md/2"
 		>
 			View Photos
 		</a>
@@ -149,17 +145,17 @@
 			<img
 				src={photoUrl}
 				alt="Display the taken photograph"
-				class=" mx-auto h-auto max-w-10/12 rounded-xl"
+				class=" mx-auto h-auto max-w-10/12 rounded-xl border border-gray-500"
 			/>
 		</div>
 		<button
-			class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl bg-gradient-to-br from-white to-gray-200 px-12 py-4 text-sm leading-4 font-light tracking-tight"
+			class="m-2 mx-auto mt-4 w-2/3 cursor-pointer text-white dark:text-black rounded-2xl bg-gradient-to-br from-gray-950 to-slate-900 dark:from-white  dark:to-gray-200 px-12 py-4 text-sm leading-4 font-light tracking-tight"
 			onclick={savePhoto}
 		>
 			Save Photo
 		</button>
 		<button
-			class="m-2 mx-auto my-2 w-2/3 cursor-pointer rounded-2xl bg-gray-900/50 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white"
+			class="m-2 mx-auto my-2 w-2/3 cursor-pointer rounded-2xl bg-gray-100 dark:bg-gray-900/50 px-12 py-4 text-sm leading-4 font-light tracking-tight text-black dark:text-white"
 			onclick={takePhoto}
 		>
 			Click Another
