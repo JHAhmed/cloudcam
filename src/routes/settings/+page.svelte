@@ -6,6 +6,7 @@
 
 	let theme = $state(userState.theme);
 	let imagePersistence = $state(userState.imagePersistence);
+	let instantUpload = $state(userState.instantUpload);
 
 	let toggled = $state(false);
 
@@ -22,11 +23,13 @@
 			},
 			body: JSON.stringify({
 				theme,
+				instantUpload,
 				imagePersistence,
 			})
 		});
 
 		userState.theme = theme;	
+		userState.instantUpload = instantUpload;
 		userState.imagePersistence = imagePersistence;
 
 		toggled = false;
@@ -54,6 +57,12 @@
 			<p class="w-full text-left">Theme</p>
 			<div class="w-full">
 				<SettingToggle {onToggle} bind:value={theme} options={['dark', 'light']} />
+			</div>
+		</div>
+		<div class="flex items-center w-full">
+			<p class="w-full text-left">Instant Upload</p>
+			<div class="w-full">
+				<SettingToggle {onToggle} bind:value={instantUpload} options={['on', 'off']} />
 			</div>
 		</div>
 		<div class="flex items-center w-full">

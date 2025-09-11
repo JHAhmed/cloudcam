@@ -1,20 +1,20 @@
 <script>
 	import '../app.css';
+	import { onMount } from 'svelte';
+	import Icon from '@iconify/svelte';
+	import { page } from '$app/stores';
+	import { blur } from 'svelte/transition';
+	import { browser } from '$app/environment';
+	import { Capacitor } from '@capacitor/core';
+	import { StatusBar, Style } from '@capacitor/status-bar';
+	
+	import { animateIn } from '$lib';
 	import favicon from '$lib/assets/favicon.svg';
 	import { userState } from '$lib/state.svelte.js';
-	import Icon from '@iconify/svelte';
-	import InstallButton from '$lib/components/InstallButton.svelte';
-	import { page } from '$app/stores';
-
-	let isBrowserTab = $state(true);
-
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { StatusBar, Style } from '@capacitor/status-bar';
-	import { Capacitor } from '@capacitor/core';
-	import { animateIn } from '$lib';
 	import AuthLock from '$components/AuthLock.svelte';
-	import { blur } from 'svelte/transition';
+	import InstallButton from '$lib/components/InstallButton.svelte';
+	
+	let isBrowserTab = $state(true);
 
     // $effect(() => {
     //     userState.userId = data.user?.id ?? null;
@@ -49,6 +49,7 @@
 
 		if (data.settings) {
 			userState.theme = data.settings.theme;
+			userState.instantUpload = data.settings.instantUpload;
 			userState.imagePersistence = data.settings.imagePersistence;
 		}
 	});

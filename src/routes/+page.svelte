@@ -1,17 +1,20 @@
 <script>
-	import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-	import { Toaster, toast } from 'svelte-sonner';
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { Toaster, toast } from 'svelte-sonner';
+	import { userState } from '$lib/state.svelte.js';
+	import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 	let { data } = $props();
 
 	let photoUrl = $state(null);
 	let userId = $state(null);
+	let imageKey = $state("");
+
+	let instantUpload = $state(true);
 
 	onMount(() => {
-
 		data.user.id ? userId = data.user.id : console.log("No user ID found.");
+		// userState.instantUpload ? instantUpload = userState.instantUpload : instantUpload = false;
 	});
 
 	const takePhoto = async () => {
@@ -23,10 +26,32 @@
 			});
 
 			photoUrl = image.webPath;
+			console.log(image);
+			if (instantUpload) {
+				await savePhoto();
+			} 
 		} catch (e) {
 			console.error('Error taking photo', e);
 		}
 	};
+
+	async function deletePhoto() {
+		console.log("Deleting photo with key:", imageKey);
+		const response = await fetch('/api/delete-image', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ fileKey: imageKey })
+		});
+
+		if (!response.ok) {
+			console.error('Error deleting file');
+			toast.error('Failed to delete image from storage');
+		} else {
+			toast('Image deleted from storage');
+			photoUrl = null;
+			imageKey = "";
+		}
+	}
 
 	const savePhoto = async () => {
         if (!photoUrl) {
@@ -56,9 +81,11 @@
                 throw new Error("Failed to get an upload URL.");
             }
 
-            const { url: presignedUrl } = await presignedUrlResponse.json();
+            const resData = await presignedUrlResponse.json();
 
-            const uploadResponse = await fetch(presignedUrl, {
+			imageKey = resData.key;
+
+            const uploadResponse = await fetch(resData.url, {
                 method: 'PUT',
                 body: photoBlob,
                 headers: {
@@ -68,7 +95,9 @@
 
             if (!uploadResponse.ok) {
                 throw new Error("Upload to R2 failed.");
-            }
+            } else {
+				console.log(uploadResponse);
+			}
 
             toast.dismiss();
             toast.success("Photo saved successfully!");
@@ -82,7 +111,7 @@
 
 </script>
 
-<Toaster richColors expand={true} visibleToasts={1} position="bottom-right" />
+<Toaster richColors expand={true} visibleToasts={1} position="bottom" />
 
 <svelte:head>
 	<title>CloudCam</title>
@@ -129,12 +158,21 @@
 				class=" mx-auto h-auto max-w-10/12 rounded-xl border border-gray-500"
 			/>
 		</div>
-		<button
-			class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl bg-gradient-to-br from-gray-950 to-slate-900 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white dark:from-white dark:to-gray-200 dark:text-black"
-			onclick={savePhoto}
-		>
-			Save Photo
+		{#if !instantUpload}
+			<button
+				class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl bg-gradient-to-br from-gray-950 to-slate-900 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white dark:from-white dark:to-gray-200 dark:text-black"
+				onclick={savePhoto}
+			>
+				Save Photo
+			</button>
+			{:else}
+			<button
+			class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl bg-gradient-to-br from-red-600 to-red-500 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white dark:from-white dark:to-gray-200 dark:text-black"
+			onclick={deletePhoto}
+			>
+			Delete Photo
 		</button>
+		{/if}
 		<button
 			class="m-2 mx-auto my-2 w-2/3 cursor-pointer rounded-2xl bg-gray-100 px-12 py-4 text-sm leading-4 font-light tracking-tight text-black dark:bg-gray-900/50 dark:text-white"
 			onclick={takePhoto}

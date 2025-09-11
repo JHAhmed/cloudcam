@@ -42,7 +42,7 @@ export async function POST({ request }) {
         // Generate the pre-signed URL, valid for 5 minutes
         const signedUrl = await getSignedUrl(S3, command, { expiresIn: 300 });
 
-        return json({ url: signedUrl });
+        return json({ url: signedUrl, key: newFileName });
     } catch (error) {
         console.error('Error generating signed URL:', error);
         return json({ error: 'Internal Server Error' }, { status: 500 });

@@ -20,6 +20,8 @@
 	async function deletePhoto() {
 		const imageKey = image.key;
 
+		console.log(imageKey);
+
 		const response = await fetch('/api/delete-image', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -110,7 +112,7 @@
 	});
 </script>
 
-<Toaster richColors position="bottom-right" />
+<Toaster richColors position="bottom" />
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->

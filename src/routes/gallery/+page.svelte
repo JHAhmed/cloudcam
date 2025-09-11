@@ -110,7 +110,7 @@
 	/>
 </svelte:head>
 
-<Toaster richColors position="bottom-right" />
+<Toaster richColors position="bottom" />
 
 <div class="my-4 p-4">
 	<div class="flex items-center mb-6 justify-between">

@@ -6,5 +6,6 @@ export let userState = $state({
 	username: 'User',
 
 	theme: 'dark',
+	instantUpload: 'off',
 	imagePersistence: 'on'
 });
