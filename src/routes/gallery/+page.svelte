@@ -15,18 +15,49 @@
 
     let displayedImages = $state(null);
 
-	let isLoading = $state(false);
-    let error = $state(null);
+	// let isLoading = $state(false);
+    // let error = $state(null);
 
 	let columns = $state(3);
 	let gap = $state(3);
 
     
-    $effect(() => {
-        isLoading = true;
-        data.images
+
+
+    // Use Svelte 5 state for reactive values
+    let images = $state([]);
+    let isLoading = $state(true); // Start in loading state
+    let error = $state(null);
+
+    // Fetch data when the component mounts on the client
+    onMount(() => {
+
+		// backButtonListener = await App.addListener('backButton', (event) => {
+		// 	if (isModal) {
+		// 		closeModal();
+		// 		event.preventDefault();
+		// 	} else {
+		// 		event.preventDefault();
+		// 		if (typeof window !== 'undefined' && window.history && window.history.length > 1) {
+		// 			window.history.back();
+		// 		} else {
+		// 			App.exitApp();
+		// 		}
+		// 	}
+		// });
+
+        if (data.user) {
+            fetch('/api/fetch-images', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: data.user.id })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch images.');
+                return res.json();
+            })
             .then(resolvedImages => {
-                displayedImages = resolvedImages;
+                images = resolvedImages;
             })
             .catch(err => {
                 console.error("Failed to load images:", err);
@@ -35,23 +66,44 @@
             .finally(() => {
                 isLoading = false;
             });
+        } else {
+            isLoading = false;
+        }
     });
 
-	onMount(async () => {
-		backButtonListener = await App.addListener('backButton', (event) => {
-			if (isModal) {
-				closeModal();
-				event.preventDefault();
-			} else {
-				event.preventDefault();
-				if (typeof window !== 'undefined' && window.history && window.history.length > 1) {
-					window.history.back();
-				} else {
-					App.exitApp();
-				}
-			}
-		});
-	});
+
+
+
+	// $effect(() => {
+    //     isLoading = true;
+    //     data.images
+    //         .then(resolvedImages => {
+    //             displayedImages = resolvedImages;
+    //         })
+    //         .catch(err => {
+    //             console.error("Failed to load images:", err);
+    //             error = err;
+    //         })
+    //         .finally(() => {
+    //             isLoading = false;
+    //         });
+    // });
+
+	// onMount(async () => {
+	// 	backButtonListener = await App.addListener('backButton', (event) => {
+	// 		if (isModal) {
+	// 			closeModal();
+	// 			event.preventDefault();
+	// 		} else {
+	// 			event.preventDefault();
+	// 			if (typeof window !== 'undefined' && window.history && window.history.length > 1) {
+	// 				window.history.back();
+	// 			} else {
+	// 				App.exitApp();
+	// 			}
+	// 		}
+	// 	});
+	// });
 
 	onDestroy(async () => {
 		if (backButtonListener) {
@@ -62,7 +114,8 @@
     function handleDelete(key) {
         closeModal();
         toast.success('Image deleted successfully!');
-        displayedImages = displayedImages.filter((image) => image.key !== key);
+        // displayedImages = displayedImages.filter((image) => image.key !== key);
+		images = images.filter((image) => image.key !== key);
     }
 
 	function openModal(image) {
@@ -126,7 +179,38 @@
 		</div>
 	</div>
 
-	{#await data.images}
+
+
+
+    {#if isLoading}
+        <div class="columns-2 gap-1 md:columns-3 md:gap-2 rounded-lg">
+            {#each Array(5) as _}
+                <div class="mb-1 md:mb-2 h-48 animate-pulse break-inside-avoid rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+            {/each}
+        </div>
+    {:else if error}
+        <p class="text-red-400">Error: {error.message}</p>
+    {:else if images.length > 0}
+        <div class="{`columns-${columns}`} {`gap-1 md:gap-${6 - columns - 1}`}">
+            {#each images as image, i}
+				<div class="{`mb-1 md:mb-${6 - columns - 1}`} break-inside-avoid">
+					<button onclick={() => openModal(image)} class="w-full flex h-full m-0 p-0">
+						<img
+							src={image.url}
+							alt="A gallery item"
+							class="h-auto w-full rounded-md md:rounded-lg object-cover shadow-lg/5 dark:shadow-md m-0 p-0"
+							loading="lazy"
+						/>
+					</button>
+				</div>
+            {/each}
+        </div>
+    {:else}
+        <Icon icon="ph:file-image-thin" class="mx-auto mt-2 size-12 mb-2 text-gray-400" />
+        <p class="text-gray-400">No images found in the gallery.</p>
+    {/if}
+
+	<!-- {#await data.images}
 		<div class="columns-2 gap-1 md:columns-3 md:gap-2 rounded-lg">
 			{#each Array(5) as _}
 				<div class="mb-1 md:mb-2 h-48 animate-pulse break-inside-avoid rounded-lg bg-gray-200 dark:bg-gray-700"></div>
@@ -135,7 +219,6 @@
 	{:then images}
 		{#if images && images.length > 0}
 			<div class="{`columns-${columns}`} {`gap-1 md:gap-${6 - columns - 1}`}">
-				<!-- {#each images as image, i} -->
 				{#each displayedImages as image, i}
 					<div class="{`mb-1 md:mb-${6 - columns - 1}`} break-inside-avoid">
 						<button onclick={() => openModal(image)} class="w-full flex h-full m-0 p-0">
@@ -155,7 +238,7 @@
 		{/if}
 	{:catch error}
 		<p class="text-red-400">Error: {error.message}</p>
-	{/await}
+	{/await} -->
 
 	{#if isModal}
 		<Modal image={modalImage} {handleDelete} {handleBackdropClick} />

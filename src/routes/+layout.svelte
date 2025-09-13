@@ -13,6 +13,7 @@
     import { userState } from '$lib/state.svelte.js';
     import AuthLock from '$components/AuthLock.svelte';
     import InstallButton from '$lib/components/InstallButton.svelte';
+	import { preloadData } from '$app/navigation';
     
     let { children, data } = $props();
     let isBrowserTab = $state(true);
@@ -42,6 +43,8 @@
             await StatusBar.setBackgroundColor({ color: '#030712' });
             await StatusBar.setStyle({ style: Style.Dark });
         }
+
+		preloadData('/gallery');
     });
 
     let navLinks = [
@@ -96,11 +99,11 @@
 		</nav>
 
 		{#key data.url}
-			<div in:blur={{ duration: 200, delay: 200 }} out:blur={{ duration: 200 }}>
+			<!-- <div in:blur={{ duration: 200, delay: 200 }} out:blur={{ duration: 200 }}> -->
 				<AuthLock isAuthenticated={data.isAuthenticated}>
 					{@render children?.()}
 				</AuthLock>
-			</div>
+			<!-- </div> -->
 		{/key}
 
 		<footer class="mt-auto pt-4">

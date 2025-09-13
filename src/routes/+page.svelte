@@ -8,16 +8,17 @@
 
 	let photoUrl = $state(null);
 	let userId = $state(null);
-	let imageKey = $state("");
+	let imageKey = $state('');
 
+	let uploading = $state(false);
 	let instantUpload = $state(true);
 
 	onMount(() => {
-		data.user.id ? userId = data.user.id : console.log("No user ID found.");
+		data.user.id ? (userId = data.user.id) : console.log('No user ID found.');
 		if (userState.instantUpload) {
-			userState.instantUpload === "on" ? instantUpload = "on" : instantUpload = "off";
+			userState.instantUpload === 'on' ? (instantUpload = 'on') : (instantUpload = 'off');
 		} else {
-			instantUpload = "off";
+			instantUpload = 'off';
 		}
 	});
 
@@ -31,16 +32,17 @@
 
 			photoUrl = image.webPath;
 			console.log(image);
-			if (instantUpload == "on") {
+			if (instantUpload == 'on') {
+				uploading = true;
 				await savePhoto();
-			} 
+			}
 		} catch (e) {
 			console.error('Error taking photo', e);
 		}
 	};
 
 	async function deletePhoto() {
-		console.log("Deleting photo with key:", imageKey);
+		console.log('Deleting photo with key:', imageKey);
 		const response = await fetch('/api/delete-image', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -53,66 +55,65 @@
 		} else {
 			toast('Image deleted from storage');
 			photoUrl = null;
-			imageKey = "";
+			imageKey = '';
 		}
 	}
 
 	const savePhoto = async () => {
-        if (!photoUrl) {
-            toast.error("Please take a photo first.");
-            return;
-        }
+		if (!photoUrl) {
+			toast.error('Please take a photo first.');
+			return;
+		}
 
-        toast.loading("Saving image...");
+		toast.loading('Saving image...');
 		console.log('User ID:', userId);
-        try {
-            const response = await fetch(photoUrl);
-            const photoBlob = await response.blob();
+		try {
+			const response = await fetch(photoUrl);
+			const photoBlob = await response.blob();
 
-            const fileName = `photo_${Date.now()}`;
+			const fileName = `photo_${Date.now()}`;
 
-            const presignedUrlResponse = await fetch('/api/get-upload-url', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    fileName: fileName,
-                    fileType: photoBlob.type,
-					userId: userId 
-                })
-            });
+			const presignedUrlResponse = await fetch('/api/get-upload-url', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					fileName: fileName,
+					fileType: photoBlob.type,
+					userId: userId
+				})
+			});
 
-            if (!presignedUrlResponse.ok) {
-                throw new Error("Failed to get an upload URL.");
-            }
+			if (!presignedUrlResponse.ok) {
+				throw new Error('Failed to get an upload URL.');
+			}
 
-            const resData = await presignedUrlResponse.json();
+			const resData = await presignedUrlResponse.json();
 
 			imageKey = resData.key;
 
-            const uploadResponse = await fetch(resData.url, {
-                method: 'PUT',
-                body: photoBlob,
-                headers: {
-                    'Content-Type': photoBlob.type,
-                },
-            });
+			const uploadResponse = await fetch(resData.url, {
+				method: 'PUT',
+				body: photoBlob,
+				headers: {
+					'Content-Type': photoBlob.type
+				}
+			});
 
-            if (!uploadResponse.ok) {
-                throw new Error("Upload to R2 failed.");
-            } else {
+			if (!uploadResponse.ok) {
+				throw new Error('Upload to R2 failed.');
+			} else {
 				console.log(uploadResponse);
 			}
 
-            toast.dismiss();
-            toast.success("Photo saved successfully!");
-
-        } catch (error) {
-            console.error("Error saving photo:", error);
-            toast.dismiss();
-            toast.error("Failed to save photo.");
-        }
-    };
-
+			toast.dismiss();
+			uploading = false;
+			toast.success('Photo saved successfully!');
+		} catch (error) {
+			console.error('Error saving photo:', error);
+			toast.dismiss();
+			toast.error('Failed to save photo.');
+		}
+	};
 </script>
 
 <Toaster richColors expand={true} visibleToasts={1} position="bottom" />
@@ -162,20 +163,21 @@
 				class=" mx-auto h-auto max-w-10/12 rounded-xl border border-gray-500"
 			/>
 		</div>
-		{#if instantUpload == "off"}
+		{#if instantUpload == 'off'}
 			<button
 				class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl bg-gradient-to-br from-gray-950 to-slate-900 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white dark:from-white dark:to-gray-200 dark:text-black"
 				onclick={savePhoto}
 			>
 				Save Photo
 			</button>
-			{:else}
+		{:else}
 			<button
-			class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl bg-gradient-to-br from-red-600 to-red-500 px-12 py-4 text-sm leading-4 font-light tracking-tight text-white dark:from-white dark:to-gray-200 dark:text-black"
-			onclick={deletePhoto}
+				disabled={uploading}
+				class="m-2 mx-auto mt-4 w-2/3 cursor-pointer rounded-2xl {uploading ? "bg-white/50" : "bg-red-500"} px-12 py-4 text-sm leading-4 font-light tracking-tight text-white dark:from-white dark:to-gray-200 dark:text-black"
+				onclick={deletePhoto}
 			>
-			Delete Photo
-		</button>
+				{uploading ? "Uploading..." : "Delete Photo"}
+			</button>
 		{/if}
 		<button
 			class="m-2 mx-auto my-2 w-2/3 cursor-pointer rounded-2xl bg-gray-100 px-12 py-4 text-sm leading-4 font-light tracking-tight text-black dark:bg-gray-900/50 dark:text-white"
